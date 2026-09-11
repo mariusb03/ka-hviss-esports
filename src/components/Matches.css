@@ -57,7 +57,10 @@
 
 .match-columns {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  );
 
   gap: 18px;
 
@@ -68,27 +71,40 @@
   min-width: 0;
 }
 
+/* FEATURED / TOGETHER */
+
 .match-column--featured {
   position: relative;
+
+  padding: 1px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(53, 167, 255, 0.8),
+    rgba(53, 167, 255, 0.08) 35%,
+    rgba(53, 167, 255, 0.02)
+  );
+
+  box-shadow:
+    0 0 40px rgba(20, 120, 255, 0.09),
+    0 30px 80px rgba(0, 0, 0, 0.15);
 }
 
 .match-column--featured::before {
   content: "";
 
   position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
+  inset: -35px;
 
-  height: 2px;
+  z-index: -1;
 
-  background: #35a7ff;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(20, 120, 255, 0.16),
+    transparent 60%
+  );
 
-  box-shadow:
-    0 0 20px rgba(53, 167, 255, 0.8),
-    0 0 40px rgba(53, 167, 255, 0.25);
-
-  z-index: 2;
+  pointer-events: none;
 }
 
 /* COLUMN HEADER */
@@ -109,9 +125,17 @@
   background: #080d18;
 }
 
-.match-column--featured .match-column__header {
+.match-column--featured
+  .match-column__header {
+  border: none;
+
   background:
-    linear-gradient(180deg, rgba(20, 120, 255, 0.08), transparent), #080d18;
+    linear-gradient(
+      180deg,
+      rgba(20, 120, 255, 0.13),
+      transparent
+    ),
+    #080d18;
 }
 
 .match-column__eyebrow {
@@ -126,7 +150,8 @@
   letter-spacing: 0.18em;
 }
 
-.match-column--featured .match-column__eyebrow {
+.match-column--featured
+  .match-column__eyebrow {
   color: #35a7ff;
 }
 
@@ -135,6 +160,13 @@
   line-height: 0.9;
 
   letter-spacing: -0.05em;
+}
+
+.match-column--featured h3 {
+  color: #ffffff;
+
+  text-shadow:
+    0 0 30px rgba(53, 167, 255, 0.2);
 }
 
 .match-column__count {
@@ -156,6 +188,15 @@
   gap: 10px;
 
   margin-top: 10px;
+}
+
+.match-column--featured
+  .match-column__list {
+  margin-top: 1px;
+
+  padding-top: 9px;
+
+  background: #050912;
 }
 
 /* MATCH CARD */
@@ -185,27 +226,14 @@
     0 0 30px rgba(20, 120, 255, 0.05);
 }
 
-.compact-match__badges {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-}
-
-.compact-match__mode {
-  padding: 5px 8px;
-
-  border: 1px solid rgba(53, 167, 255, 0.18);
-
-  background: rgba(53, 167, 255, 0.06);
-
-  color: #8995aa;
-
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-
-  text-transform: uppercase;
+.match-column--featured .compact-match {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(20, 120, 255, 0.035),
+      transparent 45%
+    ),
+    #080d18;
 }
 
 /* MATCH TOP */
@@ -218,6 +246,13 @@
   gap: 12px;
 
   margin-bottom: 22px;
+}
+
+.compact-match__badges {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
 }
 
 .compact-match__result {
@@ -236,6 +271,22 @@
 
 .compact-match__result--draw {
   color: #f4c542;
+}
+
+.compact-match__mode {
+  padding: 5px 7px;
+
+  border: 1px solid rgba(53, 167, 255, 0.16);
+
+  background: rgba(53, 167, 255, 0.05);
+
+  color: #8995aa;
+
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+
+  white-space: nowrap;
 }
 
 .compact-match__date {
@@ -259,7 +310,8 @@
 
   padding-bottom: 20px;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.07);
 }
 
 .compact-match__label {
@@ -311,10 +363,12 @@
   padding: 18px 0 0;
 }
 
-.compact-player + .compact-player {
+.compact-player
+  + .compact-player {
   margin-top: 18px;
 
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.06);
 }
 
 .compact-player__header {
@@ -374,7 +428,7 @@
   font-size: 12px;
 }
 
-/* LEETIFY RATING */
+/* RATING */
 
 .rating--positive {
   color: #43ff9a;
@@ -384,7 +438,7 @@
   color: #ff5263;
 }
 
-/* EMPTY COLUMN */
+/* EMPTY */
 
 .match-column__empty {
   min-height: 220px;
@@ -396,7 +450,8 @@
 
   padding: 32px 20px;
 
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border: 1px dashed
+    rgba(255, 255, 255, 0.1);
 
   text-align: center;
 
@@ -431,7 +486,8 @@
 
   gap: 10px;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
 
   background: #080d18;
 
@@ -485,7 +541,8 @@
   }
 
   .compact-player__stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+      repeat(3, 1fr);
   }
 
   .compact-player__stats div:last-child {
@@ -519,11 +576,6 @@
     gap: 40px;
   }
 
-  /*
-   * Put the actual Ka Hviss? games first
-   * when the columns stack vertically.
-   */
-
   .match-column--featured {
     order: -1;
   }
@@ -551,7 +603,8 @@
   }
 
   .compact-player__stats {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns:
+      repeat(5, 1fr);
   }
 
   .compact-player__stats div:last-child {
@@ -600,7 +653,11 @@
     align-items: flex-start;
     flex-direction: column;
 
-    gap: 7px;
+    gap: 10px;
+  }
+
+  .compact-match__badges {
+    flex-wrap: wrap;
   }
 
   .compact-match__main {
@@ -619,7 +676,8 @@
   }
 
   .compact-player__stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+      repeat(3, 1fr);
 
     gap: 14px 8px;
   }

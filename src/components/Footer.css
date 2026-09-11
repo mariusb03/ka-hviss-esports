@@ -1,0 +1,150 @@
+.footer {
+  padding: 80px 48px 32px;
+
+  overflow: hidden;
+
+  border-top: 1px solid rgba(53, 167, 255, 0.16);
+
+  background:
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(20, 120, 255, 0.12),
+      transparent 40%
+    ),
+    #010207;
+}
+
+.footer__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 100px;
+}
+
+.footer__brand {
+  display: flex;
+  align-items: baseline;
+
+  gap: 10px;
+}
+
+.footer__brand span {
+  font-size: 20px;
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+}
+
+.footer__brand small {
+  color: #35a7ff;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.footer__back {
+  color: #8995aa;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.footer__back:hover {
+  color: #35a7ff;
+}
+
+.footer__statement span {
+  display: block;
+
+  margin-bottom: 18px;
+
+  color: #35a7ff;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.footer__statement h2 {
+  font-size: clamp(72px, 12vw, 190px);
+  line-height: 0.78;
+
+  letter-spacing: -0.075em;
+}
+
+.footer__bottom {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 20px;
+
+  margin-top: 100px;
+  padding-top: 24px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: #556176;
+
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.footer__bottom span:nth-child(2) {
+  text-align: center;
+}
+
+.footer__bottom span:last-child {
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 72px 24px 28px;
+  }
+
+  .footer__top {
+    margin-bottom: 72px;
+  }
+
+  .footer__statement h2 {
+    font-size: clamp(68px, 16vw, 120px);
+  }
+
+  .footer__bottom {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+
+    margin-top: 72px;
+  }
+
+  .footer__bottom span:nth-child(2),
+  .footer__bottom span:last-child {
+    text-align: left;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer {
+    padding: 64px 20px 24px;
+  }
+
+  .footer__top {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 24px;
+  }
+
+  .footer__statement h2 {
+    font-size: clamp(58px, 17vw, 90px);
+  }
+}

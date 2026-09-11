@@ -1,0 +1,195 @@
+.about {
+  position: relative;
+
+  padding: 120px 48px 0;
+
+  overflow: hidden;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(20, 120, 255, 0.1),
+      transparent 30%
+    ),
+    #02040a;
+}
+
+.about__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 72px;
+}
+
+.about__eyebrow {
+  color: #35a7ff;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.about__index {
+  color: #556176;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.about__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+
+  gap: 80px;
+
+  padding-bottom: 120px;
+}
+
+.about__title h2 {
+  max-width: 900px;
+
+  font-size: clamp(58px, 8vw, 128px);
+  line-height: 0.84;
+
+  letter-spacing: -0.065em;
+}
+
+.about__content {
+  max-width: 560px;
+
+  padding-top: 12px;
+}
+
+.about__content p {
+  margin-bottom: 24px;
+
+  color: #8995aa;
+
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.about__content .about__lead {
+  color: #ffffff;
+
+  font-size: 22px;
+  line-height: 1.45;
+
+  letter-spacing: -0.02em;
+}
+
+.about__quote {
+  margin-top: 56px;
+
+  padding: 28px 0;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.about__quote span {
+  display: block;
+
+  margin-bottom: 18px;
+
+  color: #35a7ff;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.about__quote strong {
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1;
+
+  letter-spacing: -0.045em;
+}
+
+.about__ticker {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 36px;
+
+  padding: 24px 0;
+
+  overflow: hidden;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: #556176;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+
+  white-space: nowrap;
+}
+
+.about__ticker span:nth-child(2) {
+  color: #35a7ff;
+}
+
+@media (max-width: 900px) {
+  .about {
+    padding: 88px 24px 0;
+  }
+
+  .about__top {
+    margin-bottom: 52px;
+  }
+
+  .about__grid {
+    grid-template-columns: 1fr;
+
+    gap: 52px;
+
+    padding-bottom: 88px;
+  }
+
+  .about__content {
+    max-width: 680px;
+  }
+}
+
+@media (max-width: 540px) {
+  .about {
+    padding: 72px 20px 0;
+  }
+
+  .about__top {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-bottom: 44px;
+  }
+
+  .about__title h2 {
+    font-size: clamp(50px, 15vw, 72px);
+  }
+
+  .about__content .about__lead {
+    font-size: 19px;
+  }
+
+  .about__content p {
+    font-size: 15px;
+  }
+
+  .about__grid {
+    padding-bottom: 72px;
+  }
+
+  .about__ticker {
+    justify-content: flex-start;
+
+    overflow-x: hidden;
+  }
+}

@@ -12,7 +12,6 @@ type TeamScore = {
 type PlayerStats = {
   steam64_id: string;
   name: string;
-
   initial_team_number: number;
 
   total_kills: number;
@@ -44,7 +43,10 @@ type MatchColumnProps = {
 };
 
 function formatMapName(mapName: string) {
-  return mapName.replace("de_", "").replace("cs_", "").toUpperCase();
+  return mapName
+    .replace("de_", "")
+    .replace("cs_", "")
+    .toUpperCase();
 }
 
 function formatDate(date: string) {
@@ -65,7 +67,9 @@ function formatGameMode(dataSource: string) {
       return "COMPETITIVE";
 
     default:
-      return dataSource.replaceAll("_", " ").toUpperCase();
+      return dataSource
+        .replaceAll("_", " ")
+        .toUpperCase();
   }
 }
 
@@ -81,11 +85,13 @@ function getMatchResult(match: Match) {
   }
 
   const playerTeam = match.team_scores.find(
-    (team) => team.team_number === player.initial_team_number,
+    (team) =>
+      team.team_number === player.initial_team_number,
   );
 
   const opponentTeam = match.team_scores.find(
-    (team) => team.team_number !== player.initial_team_number,
+    (team) =>
+      team.team_number !== player.initial_team_number,
   );
 
   const playerScore = playerTeam?.score ?? 0;
@@ -106,10 +112,13 @@ function getMatchResult(match: Match) {
 }
 
 function MatchCard({ match }: { match: Match }) {
-  const { result, playerScore, opponentScore } = getMatchResult(match);
+  const { result, playerScore, opponentScore } =
+    getMatchResult(match);
 
   return (
-    <article className={`compact-match compact-match--${result.toLowerCase()}`}>
+    <article
+      className={`compact-match compact-match--${result.toLowerCase()}`}
+    >
       <div className="compact-match__top">
         <div className="compact-match__badges">
           <span
@@ -130,9 +139,13 @@ function MatchCard({ match }: { match: Match }) {
 
       <div className="compact-match__main">
         <div>
-          <span className="compact-match__label">MAP</span>
+          <span className="compact-match__label">
+            MAP
+          </span>
 
-          <h4>{formatMapName(match.map_name)}</h4>
+          <h4>
+            {formatMapName(match.map_name)}
+          </h4>
         </div>
 
         <div className="compact-match__score">
@@ -146,11 +159,16 @@ function MatchCard({ match }: { match: Match }) {
 
       <div className="compact-match__players">
         {match.stats.map((player) => (
-          <div className="compact-player" key={player.steam64_id}>
+          <div
+            className="compact-player"
+            key={player.steam64_id}
+          >
             <div className="compact-player__header">
               <strong>{player.name}</strong>
 
-              <span>{player.kd_ratio.toFixed(2)} KD</span>
+              <span>
+                {player.kd_ratio.toFixed(2)} KD
+              </span>
             </div>
 
             <div className="compact-player__stats">
@@ -203,10 +221,16 @@ function MatchColumn({
   featured = false,
 }: MatchColumnProps) {
   return (
-    <div className={`match-column ${featured ? "match-column--featured" : ""}`}>
+    <div
+      className={`match-column ${
+        featured ? "match-column--featured" : ""
+      }`}
+    >
       <div className="match-column__header">
         <div>
-          <span className="match-column__eyebrow">{eyebrow}</span>
+          <span className="match-column__eyebrow">
+            {eyebrow}
+          </span>
 
           <h3>{title}</h3>
         </div>
@@ -218,12 +242,19 @@ function MatchColumn({
 
       <div className="match-column__list">
         {matches.length > 0 ? (
-          matches.map((match) => <MatchCard match={match} key={match.id} />)
+          matches.map((match) => (
+            <MatchCard
+              match={match}
+              key={match.id}
+            />
+          ))
         ) : (
           <div className="match-column__empty">
             <span>NO MATCHES FOUND</span>
 
-            <p>Absolutely nothing happened here.</p>
+            <p>
+              Absolutely nothing happened here.
+            </p>
           </div>
         )}
       </div>
@@ -263,11 +294,13 @@ function Matches() {
   const brotatoMatches = matches
     .filter((match) => {
       const hasBrotato = match.stats.some(
-        (player) => player.steam64_id === BROTATO_ID,
+        (player) =>
+          player.steam64_id === BROTATO_ID,
       );
 
       const hasSelnes = match.stats.some(
-        (player) => player.steam64_id === SELNES_ID,
+        (player) =>
+          player.steam64_id === SELNES_ID,
       );
 
       return hasBrotato && !hasSelnes;
@@ -277,11 +310,13 @@ function Matches() {
   const togetherMatches = matches
     .filter((match) => {
       const hasBrotato = match.stats.some(
-        (player) => player.steam64_id === BROTATO_ID,
+        (player) =>
+          player.steam64_id === BROTATO_ID,
       );
 
       const hasSelnes = match.stats.some(
-        (player) => player.steam64_id === SELNES_ID,
+        (player) =>
+          player.steam64_id === SELNES_ID,
       );
 
       return hasBrotato && hasSelnes;
@@ -291,11 +326,13 @@ function Matches() {
   const selnesMatches = matches
     .filter((match) => {
       const hasBrotato = match.stats.some(
-        (player) => player.steam64_id === BROTATO_ID,
+        (player) =>
+          player.steam64_id === BROTATO_ID,
       );
 
       const hasSelnes = match.stats.some(
-        (player) => player.steam64_id === SELNES_ID,
+        (player) =>
+          player.steam64_id === SELNES_ID,
       );
 
       return hasSelnes && !hasBrotato;
@@ -303,22 +340,31 @@ function Matches() {
     .slice(0, 5);
 
   return (
-    <section className="matches" id="matches">
+    <section
+      className="matches"
+      id="matches"
+    >
       <div className="matches__header">
         <div>
-          <span className="matches__eyebrow">CS2 / MATCH FEED</span>
+          <span className="matches__eyebrow">
+            CS2 / MATCH FEED
+          </span>
 
           <h2>RECENT GAMES.</h2>
         </div>
 
-        <span className="matches__status">QUESTIONABLE FORM / LIVE DATA</span>
+        <span className="matches__status">
+          QUESTIONABLE FORM / LIVE DATA
+        </span>
       </div>
 
       {loading && (
         <div className="matches__message">
           <span>LOADING</span>
 
-          <p>Investigating recent questionable decisions...</p>
+          <p>
+            Investigating recent questionable decisions...
+          </p>
         </div>
       )}
 
@@ -326,7 +372,9 @@ function Matches() {
         <div className="matches__message">
           <span>OFFLINE</span>
 
-          <p>Match history is currently unavailable.</p>
+          <p>
+            Match history is currently unavailable.
+          </p>
         </div>
       )}
 
@@ -353,7 +401,9 @@ function Matches() {
         </div>
       )}
 
-      <div className="matches__credit">DATA PROVIDED BY LEETIFY</div>
+      <div className="matches__credit">
+        DATA PROVIDED BY LEETIFY
+      </div>
     </section>
   );
 }
