@@ -1,0 +1,194 @@
+.matches {
+  padding: 120px 48px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: #050912;
+}
+
+.matches__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 48px;
+}
+
+.matches__eyebrow {
+  display: block;
+
+  margin-bottom: 16px;
+
+  color: #35a7ff;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.matches h2 {
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.9;
+
+  letter-spacing: -0.06em;
+}
+
+.matches__status {
+  color: #8995aa;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.matches__list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.match-card {
+  padding: 32px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: #080d18;
+
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.match-card:hover {
+  transform: translateX(6px);
+
+  border-color: rgba(53, 167, 255, 0.45);
+
+  box-shadow: 0 12px 40px rgba(20, 120, 255, 0.08);
+}
+
+.match-card__meta {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 28px;
+
+  color: #8995aa;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.match-card__status {
+  color: #35a7ff;
+}
+
+.match-card__teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  gap: 28px;
+}
+
+.match-card__label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #8995aa;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.match-card h3 {
+  font-size: clamp(28px, 4vw, 52px);
+
+  line-height: 1;
+
+  letter-spacing: -0.04em;
+}
+
+.match-card__vs {
+  color: #35a7ff;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.match-card__opponent {
+  text-align: right;
+}
+
+.match-card__schedule {
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: 28px;
+  padding-top: 20px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  color: #8995aa;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 768px) {
+  .matches {
+    padding: 88px 24px;
+  }
+
+  .matches__header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 18px;
+  }
+
+  .match-card__teams {
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .match-card__vs {
+    padding: 8px 0;
+  }
+
+  .match-card__opponent {
+    text-align: left;
+  }
+}
+
+@media (max-width: 540px) {
+  .matches {
+    padding: 72px 20px;
+  }
+
+  .match-card {
+    padding: 24px 20px;
+  }
+
+  .match-card__meta {
+    gap: 16px;
+
+    flex-direction: column;
+  }
+
+  .match-card__schedule {
+    gap: 10px;
+
+    flex-direction: column;
+  }
+}

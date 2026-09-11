@@ -1,0 +1,177 @@
+.hero {
+  min-height: calc(100vh - 88px);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+
+  padding: 64px 48px;
+
+  overflow: hidden;
+}
+
+.hero__content {
+  max-width: 720px;
+}
+
+.hero__eyebrow {
+  display: inline-block;
+
+  margin-bottom: 24px;
+
+  color: #35a7ff;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.hero h1 {
+  margin: 0;
+
+  font-size: clamp(64px, 8vw, 132px);
+  line-height: 0.88;
+
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.hero p {
+  max-width: 560px;
+
+  margin-top: 32px;
+
+  color: #8995aa;
+
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 16px;
+
+  margin-top: 36px;
+}
+
+.hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 52px;
+
+  padding: 0 24px;
+
+  border: 1px solid transparent;
+
+  text-decoration: none;
+  text-transform: uppercase;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+
+  transition: 0.2s ease;
+}
+
+.hero__button--primary {
+  background: #1478ff;
+  color: #ffffff;
+
+  box-shadow: 0 0 30px rgba(20, 120, 255, 0.25);
+}
+
+.hero__button--primary:hover {
+  background: #35a7ff;
+
+  box-shadow: 0 0 40px rgba(53, 167, 255, 0.45);
+}
+
+.hero__button--secondary {
+  border-color: rgba(255, 255, 255, 0.16);
+
+  color: #ffffff;
+}
+
+.hero__button--secondary:hover {
+  border-color: #35a7ff;
+
+  color: #35a7ff;
+}
+
+.hero__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero__visual img {
+  width: min(620px, 100%);
+
+  filter: drop-shadow(0 0 60px rgba(20, 120, 255, 0.35));
+}
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: auto;
+
+    grid-template-columns: 1fr;
+
+    gap: 48px;
+
+    padding: 72px 24px;
+  }
+
+  .hero__content {
+    max-width: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(54px, 13vw, 92px);
+  }
+
+  .hero p {
+    max-width: 640px;
+
+    font-size: 16px;
+  }
+
+  .hero__visual img {
+    width: min(520px, 90%);
+  }
+}
+
+@media (max-width: 540px) {
+  .hero {
+    padding: 56px 20px;
+  }
+
+  .hero__eyebrow {
+    margin-bottom: 18px;
+
+    font-size: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(46px, 14vw, 70px);
+  }
+
+  .hero p {
+    margin-top: 24px;
+
+    font-size: 15px;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+  }
+
+  .hero__button {
+    width: 100%;
+  }
+
+  .hero__visual {
+    margin-top: 8px;
+  }
+}

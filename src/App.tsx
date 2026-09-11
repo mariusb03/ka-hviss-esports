@@ -1,8 +1,16 @@
+import Navigation from "./components/Navigation";
+import Hero from "./components/Hero";
+import Team from "./components/Team";
+import Matches from "./components/Matches";
+
 function App() {
   return (
-    <main>
-      <h1>Ka Hviss? E-Sports</h1>
-    </main>
+    <>
+      <Navigation />
+      <Hero />
+      <Team />
+      <Matches />
+    </>
   );
 }
 
