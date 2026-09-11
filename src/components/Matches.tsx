@@ -380,10 +380,20 @@ function Matches() {
         <>
           <TogetherMatches matches={togetherMatches} />
 
-          <div className="solo-feed__header">
-            <span>INDIVIDUAL FORM</span>
+          <div className="solo-feed__divider">
+            <div className="solo-feed__divider-line" />
 
-            <p>Recent matches played without another Ka Hviss? player.</p>
+            <div className="solo-feed__divider-content">
+              <span className="solo-feed__divider-eyebrow">
+                SOLO QUEUE / INDIVIDUAL FORM
+              </span>
+
+              <h3>ON THEIR OWN.</h3>
+
+              <p>Recent matches played without another Ka Hviss? player.</p>
+            </div>
+
+            <div className="solo-feed__divider-line" />
           </div>
 
           <div className="match-columns">
