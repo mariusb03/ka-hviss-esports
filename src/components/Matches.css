@@ -168,6 +168,32 @@
 
 /* PLAYER COLUMNS */
 
+.solo-feed__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin: 48px 0 18px;
+}
+
+.solo-feed__header span {
+  color: #35a7ff;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.solo-feed__header p {
+  color: #667287;
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
 .match-columns {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -627,6 +653,13 @@
 /* MOBILE */
 
 @media (max-width: 600px) {
+  .solo-feed__header {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 8px;
+  }
+
   .matches {
     padding: 72px 20px;
   }

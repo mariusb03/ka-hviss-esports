@@ -380,11 +380,17 @@ function Matches() {
         <>
           <TogetherMatches matches={togetherMatches} />
 
+          <div className="solo-feed__header">
+            <span>INDIVIDUAL FORM</span>
+
+            <p>Recent matches played without another Ka Hviss? player.</p>
+          </div>
+
           <div className="match-columns">
             {PLAYERS.map((player) => (
               <MatchColumn
                 key={player.steamId}
-                eyebrow={`PLAYER / ${player.number}`}
+                eyebrow={`SOLO MATCHES / ${player.number}`}
                 title={player.name}
                 matches={getSoloMatches(player.steamId)}
               />
