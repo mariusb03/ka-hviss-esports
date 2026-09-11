@@ -9,6 +9,14 @@ const PLAYERS = [
     name: "Selnes",
     steamId: "76561198815099525",
   },
+  {
+    name: "Toonga",
+    steamId: "76561198170149487",
+  },
+  {
+    name: "Ewan M+cgregor",
+    steamId: "76561198176454129",
+  },
 ];
 
 type TeamScore = {
@@ -95,19 +103,14 @@ export default async function handler(
 
     const allMatches = successfulResults.flat();
 
-    /*
-     * Brotato and Selnes receive separate responses from Leetify.
-     *
-     * If they played the same match, the match itself has the same
-     * data_source_match_id. We therefore merge those two entries and
-     * keep both players' stats on the resulting match.
-     */
     const groupedMatches = new Map<string, LeetifyMatch>();
 
     for (const match of allMatches) {
-      const matchKey = match.data_source_match_id || match.id;
+      const matchKey =
+        match.data_source_match_id || match.id;
 
-      const existingMatch = groupedMatches.get(matchKey);
+      const existingMatch =
+        groupedMatches.get(matchKey);
 
       if (!existingMatch) {
         groupedMatches.set(matchKey, {
@@ -119,10 +122,12 @@ export default async function handler(
       }
 
       for (const playerStats of match.stats) {
-        const alreadyExists = existingMatch.stats.some(
-          (existingPlayer) =>
-            existingPlayer.steam64_id === playerStats.steam64_id,
-        );
+        const alreadyExists =
+          existingMatch.stats.some(
+            (existingPlayer) =>
+              existingPlayer.steam64_id ===
+              playerStats.steam64_id,
+          );
 
         if (!alreadyExists) {
           existingMatch.stats.push(playerStats);
@@ -130,13 +135,15 @@ export default async function handler(
       }
     }
 
-    const matches = Array.from(groupedMatches.values())
+    const matches = Array.from(
+      groupedMatches.values(),
+    )
       .sort(
         (a, b) =>
           new Date(b.finished_at).getTime() -
           new Date(a.finished_at).getTime(),
       )
-      .slice(0, 30);
+      .slice(0, 60);
 
     return res.status(200).json(matches);
   } catch (error) {

@@ -49,12 +49,15 @@
 
 .team__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
 }
 
 .player-card {
   position: relative;
+
+  min-width: 0;
 
   overflow: hidden;
 
@@ -73,13 +76,14 @@
 
   border-color: rgba(53, 167, 255, 0.5);
 
-  box-shadow: 0 20px 60px rgba(20, 120, 255, 0.12);
+  box-shadow:
+    0 20px 60px rgba(20, 120, 255, 0.12);
 }
 
 .player-card__image {
   position: relative;
 
-  height: 620px;
+  aspect-ratio: 4 / 5;
 
   overflow: hidden;
 
@@ -116,14 +120,14 @@
 
 .player-card__number {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 20px;
+  right: 20px;
 
   z-index: 2;
 
   color: rgba(255, 255, 255, 0.5);
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -133,7 +137,9 @@
   align-items: flex-end;
   justify-content: space-between;
 
-  padding: 28px;
+  gap: 14px;
+
+  padding: 24px;
 }
 
 .player-card__role {
@@ -143,24 +149,27 @@
 
   color: #35a7ff;
 
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.2em;
 }
 
 .player-card h3 {
-  font-size: clamp(32px, 4vw, 54px);
+  overflow-wrap: anywhere;
 
-  line-height: 1;
+  font-size: clamp(25px, 2.7vw, 44px);
+  line-height: 0.95;
 
   letter-spacing: -0.04em;
   text-transform: uppercase;
 }
 
 .player-card__arrow {
+  flex-shrink: 0;
+
   color: #8995aa;
 
-  font-size: 28px;
+  font-size: 24px;
 
   transition:
     color 0.2s ease,
@@ -173,17 +182,29 @@
   transform: translate(3px, -3px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .team {
-    padding: 88px 24px;
+    padding: 100px 32px;
   }
 
   .team__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
   }
 
   .player-card__image {
-    height: 700px;
+    aspect-ratio: 4 / 4.5;
+  }
+
+  .player-card h3 {
+    font-size: clamp(32px, 5vw, 50px);
+  }
+}
+
+@media (max-width: 768px) {
+  .team {
+    padding: 88px 24px;
   }
 }
 
@@ -206,8 +227,12 @@
     font-size: clamp(44px, 14vw, 68px);
   }
 
+  .team__grid {
+    grid-template-columns: 1fr;
+  }
+
   .player-card__image {
-    height: 460px;
+    aspect-ratio: 4 / 5;
   }
 
   .player-card__info {
@@ -215,6 +240,6 @@
   }
 
   .player-card h3 {
-    font-size: 36px;
+    font-size: 38px;
   }
 }

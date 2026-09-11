@@ -13,6 +13,18 @@ const players = [
     role: "CS2 PLAYER",
     number: "02",
   },
+  {
+    name: "Toonga",
+    image: "/players/toonga.png",
+    role: "CS2 PLAYER",
+    number: "03",
+  },
+  {
+    name: "Ewan M+cgregor",
+    image: "/players/ewan-mcgregor.png",
+    role: "CS2 PLAYER",
+    number: "04",
+  },
 ];
 
 function Team() {
@@ -20,18 +32,26 @@ function Team() {
     <section className="team" id="teams">
       <div className="team__header">
         <div>
-          <span className="team__eyebrow">CS2 / CURRENT ROSTER</span>
+          <span className="team__eyebrow">
+            CS2 / CURRENT ROSTER
+          </span>
+
           <h2>MEET THE TEAM.</h2>
         </div>
 
-        <span className="team__count">02 PLAYERS</span>
+        <span className="team__count">
+          {String(players.length).padStart(2, "0")} PLAYERS
+        </span>
       </div>
 
       <div className="team__grid">
         {players.map((player) => (
           <article className="player-card" key={player.name}>
             <div className="player-card__image">
-              <img src={player.image} alt={player.name} />
+              <img
+                src={player.image}
+                alt={player.name}
+              />
 
               <span className="player-card__number">
                 {player.number}
@@ -47,7 +67,9 @@ function Team() {
                 <h3>{player.name}</h3>
               </div>
 
-              <span className="player-card__arrow">↗</span>
+              <span className="player-card__arrow">
+                ↗
+              </span>
             </div>
           </article>
         ))}

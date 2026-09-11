@@ -1,8 +1,32 @@
 import { useEffect, useState } from "react";
 import "./Matches.css";
 
-const BROTATO_ID = "76561198285667407";
-const SELNES_ID = "76561198815099525";
+const PLAYERS = [
+  {
+    name: "Brotato",
+    steamId: "76561198285667407",
+    number: "01",
+  },
+  {
+    name: "Selnes",
+    steamId: "76561198815099525",
+    number: "02",
+  },
+  {
+    name: "Toonga",
+    steamId: "76561198170149487",
+    number: "03",
+  },
+  {
+    name: "Ewan M+cgregor",
+    steamId: "76561198176454129",
+    number: "04",
+  },
+];
+
+const PLAYER_IDS = PLAYERS.map(
+  (player) => player.steamId,
+);
 
 type TeamScore = {
   team_number: number;
@@ -12,6 +36,7 @@ type TeamScore = {
 type PlayerStats = {
   steam64_id: string;
   name: string;
+
   initial_team_number: number;
 
   total_kills: number;
@@ -39,7 +64,6 @@ type MatchColumnProps = {
   eyebrow: string;
   title: string;
   matches: Match[];
-  featured?: boolean;
 };
 
 function formatMapName(mapName: string) {
@@ -73,6 +97,12 @@ function formatGameMode(dataSource: string) {
   }
 }
 
+function getRosterPlayers(match: Match) {
+  return match.stats.filter((player) =>
+    PLAYER_IDS.includes(player.steam64_id),
+  );
+}
+
 function getMatchResult(match: Match) {
   const player = match.stats[0];
 
@@ -86,12 +116,14 @@ function getMatchResult(match: Match) {
 
   const playerTeam = match.team_scores.find(
     (team) =>
-      team.team_number === player.initial_team_number,
+      team.team_number ===
+      player.initial_team_number,
   );
 
   const opponentTeam = match.team_scores.find(
     (team) =>
-      team.team_number !== player.initial_team_number,
+      team.team_number !==
+      player.initial_team_number,
   );
 
   const playerScore = playerTeam?.score ?? 0;
@@ -111,9 +143,19 @@ function getMatchResult(match: Match) {
   };
 }
 
-function MatchCard({ match }: { match: Match }) {
-  const { result, playerScore, opponentScore } =
-    getMatchResult(match);
+function MatchCard({
+  match,
+}: {
+  match: Match;
+}) {
+  const {
+    result,
+    playerScore,
+    opponentScore,
+  } = getMatchResult(match);
+
+  const rosterPlayers =
+    getRosterPlayers(match);
 
   return (
     <article
@@ -158,7 +200,7 @@ function MatchCard({ match }: { match: Match }) {
       </div>
 
       <div className="compact-match__players">
-        {match.stats.map((player) => (
+        {rosterPlayers.map((player) => (
           <div
             className="compact-player"
             key={player.steam64_id}
@@ -174,22 +216,30 @@ function MatchCard({ match }: { match: Match }) {
             <div className="compact-player__stats">
               <div>
                 <span>K</span>
-                <strong>{player.total_kills}</strong>
+                <strong>
+                  {player.total_kills}
+                </strong>
               </div>
 
               <div>
                 <span>D</span>
-                <strong>{player.total_deaths}</strong>
+                <strong>
+                  {player.total_deaths}
+                </strong>
               </div>
 
               <div>
                 <span>A</span>
-                <strong>{player.total_assists}</strong>
+                <strong>
+                  {player.total_assists}
+                </strong>
               </div>
 
               <div>
                 <span>HS</span>
-                <strong>{player.total_hs_kills}</strong>
+                <strong>
+                  {player.total_hs_kills}
+                </strong>
               </div>
 
               <div>
@@ -202,8 +252,13 @@ function MatchCard({ match }: { match: Match }) {
                       : "rating rating--negative"
                   }
                 >
-                  {player.leetify_rating > 0 ? "+" : ""}
-                  {player.leetify_rating.toFixed(3)}
+                  {player.leetify_rating > 0
+                    ? "+"
+                    : ""}
+
+                  {player.leetify_rating.toFixed(
+                    3,
+                  )}
                 </strong>
               </div>
             </div>
@@ -218,14 +273,9 @@ function MatchColumn({
   eyebrow,
   title,
   matches,
-  featured = false,
 }: MatchColumnProps) {
   return (
-    <div
-      className={`match-column ${
-        featured ? "match-column--featured" : ""
-      }`}
-    >
+    <div className="match-column">
       <div className="match-column__header">
         <div>
           <span className="match-column__eyebrow">
@@ -236,7 +286,11 @@ function MatchColumn({
         </div>
 
         <span className="match-column__count">
-          {String(matches.length).padStart(2, "0")} MATCHES
+          {String(matches.length).padStart(
+            2,
+            "0",
+          )}{" "}
+          MATCHES
         </span>
       </div>
 
@@ -262,21 +316,83 @@ function MatchColumn({
   );
 }
 
+function TogetherMatches({
+  matches,
+}: {
+  matches: Match[];
+}) {
+  return (
+    <div className="together-feed">
+      <div className="together-feed__header">
+        <div>
+          <span>
+            KA HVISS? / CS2
+          </span>
+
+          <h3>TOGETHER.</h3>
+        </div>
+
+        <div className="together-feed__meta">
+          <span>
+            {String(matches.length).padStart(
+              2,
+              "0",
+            )}{" "}
+            MATCHES
+          </span>
+
+          <strong>
+            THE ACTUAL TEAM GAMES
+          </strong>
+        </div>
+      </div>
+
+      {matches.length > 0 ? (
+        <div className="together-feed__grid">
+          {matches.map((match) => (
+            <MatchCard
+              match={match}
+              key={match.id}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="match-column__empty">
+          <span>NO TEAM GAMES FOUND</span>
+
+          <p>
+            Perhaps queue together for once.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Matches() {
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [matches, setMatches] =
+    useState<Match[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState(false);
 
   useEffect(() => {
     async function loadMatches() {
       try {
-        const response = await fetch("/api/matches");
+        const response =
+          await fetch("/api/matches");
 
         if (!response.ok) {
-          throw new Error("Could not load matches");
+          throw new Error(
+            "Could not load matches",
+          );
         }
 
-        const data = await response.json();
+        const data =
+          await response.json();
 
         setMatches(data);
       } catch (error) {
@@ -291,53 +407,38 @@ function Matches() {
     loadMatches();
   }, []);
 
-  const brotatoMatches = matches
-    .filter((match) => {
-      const hasBrotato = match.stats.some(
-        (player) =>
-          player.steam64_id === BROTATO_ID,
-      );
-
-      const hasSelnes = match.stats.some(
-        (player) =>
-          player.steam64_id === SELNES_ID,
-      );
-
-      return hasBrotato && !hasSelnes;
-    })
-    .slice(0, 5);
-
+  /*
+   * A "together" match is any game containing
+   * at least two current Ka Hviss? players.
+   */
   const togetherMatches = matches
-    .filter((match) => {
-      const hasBrotato = match.stats.some(
-        (player) =>
-          player.steam64_id === BROTATO_ID,
-      );
+    .filter(
+      (match) =>
+        getRosterPlayers(match).length >= 2,
+    )
+    .slice(0, 6);
 
-      const hasSelnes = match.stats.some(
-        (player) =>
-          player.steam64_id === SELNES_ID,
-      );
+  /*
+   * Solo column:
+   * player participated, but no other
+   * current roster member did.
+   */
+  function getSoloMatches(
+    steamId: string,
+  ) {
+    return matches
+      .filter((match) => {
+        const rosterPlayers =
+          getRosterPlayers(match);
 
-      return hasBrotato && hasSelnes;
-    })
-    .slice(0, 5);
-
-  const selnesMatches = matches
-    .filter((match) => {
-      const hasBrotato = match.stats.some(
-        (player) =>
-          player.steam64_id === BROTATO_ID,
-      );
-
-      const hasSelnes = match.stats.some(
-        (player) =>
-          player.steam64_id === SELNES_ID,
-      );
-
-      return hasSelnes && !hasBrotato;
-    })
-    .slice(0, 5);
+        return (
+          rosterPlayers.length === 1 &&
+          rosterPlayers[0].steam64_id ===
+            steamId
+        );
+      })
+      .slice(0, 5);
+  }
 
   return (
     <section
@@ -363,7 +464,8 @@ function Matches() {
           <span>LOADING</span>
 
           <p>
-            Investigating recent questionable decisions...
+            Investigating recent
+            questionable decisions...
           </p>
         </div>
       )}
@@ -373,32 +475,31 @@ function Matches() {
           <span>OFFLINE</span>
 
           <p>
-            Match history is currently unavailable.
+            Match history is currently
+            unavailable.
           </p>
         </div>
       )}
 
       {!loading && !error && (
-        <div className="match-columns">
-          <MatchColumn
-            eyebrow="PLAYER / 01"
-            title="BROTATO"
-            matches={brotatoMatches}
-          />
-
-          <MatchColumn
-            eyebrow="KA HVISS? / CS2"
-            title="TOGETHER"
+        <>
+          <TogetherMatches
             matches={togetherMatches}
-            featured
           />
 
-          <MatchColumn
-            eyebrow="PLAYER / 02"
-            title="SELNES"
-            matches={selnesMatches}
-          />
-        </div>
+          <div className="match-columns">
+            {PLAYERS.map((player) => (
+              <MatchColumn
+                key={player.steamId}
+                eyebrow={`PLAYER / ${player.number}`}
+                title={player.name}
+                matches={getSoloMatches(
+                  player.steamId,
+                )}
+              />
+            ))}
+          </div>
+        </>
       )}
 
       <div className="matches__credit">
