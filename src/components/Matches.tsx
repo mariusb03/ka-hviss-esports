@@ -57,7 +57,7 @@ function Matches() {
 
         const data = await response.json();
 
-        setMatches(data.slice(0, 5));
+        setMatches(data.slice(0, 10));
       } catch (error) {
         console.error(error);
         setError(true);
@@ -69,6 +69,51 @@ function Matches() {
     loadMatches();
   }, []);
 
+  const matchSummary = matches.reduce(
+    (summary, match) => {
+      const player = match.stats[0];
+
+      if (!player) {
+        return summary;
+      }
+
+      const playerTeam = match.team_scores.find(
+        (team) => team.team_number === player.initial_team_number,
+      );
+
+      const opponentTeam = match.team_scores.find(
+        (team) => team.team_number !== player.initial_team_number,
+      );
+
+      if (!playerTeam || !opponentTeam) {
+        return summary;
+      }
+
+      summary.played += 1;
+
+      if (playerTeam.score > opponentTeam.score) {
+        summary.wins += 1;
+      } else if (playerTeam.score < opponentTeam.score) {
+        summary.losses += 1;
+      } else {
+        summary.draws += 1;
+      }
+
+      return summary;
+    },
+    {
+      played: 0,
+      wins: 0,
+      losses: 0,
+      draws: 0,
+    },
+  );
+
+  const winRate =
+    matchSummary.played > 0
+      ? Math.round((matchSummary.wins / matchSummary.played) * 100)
+      : 0;
+
   return (
     <section className="matches" id="matches">
       <div className="matches__header">
@@ -77,10 +122,16 @@ function Matches() {
           <h2>RECENT GAMES.</h2>
         </div>
 
-        <span className="matches__status">POWERED BY QUESTIONABLE AIM</span>
+        <span className="matches__status">
+          LAST 10 / QUESTIONABLE FORM
+        </span>
       </div>
 
-      {loading && <p className="matches__message">Loading match history...</p>}
+      {loading && (
+        <p className="matches__message">
+          Loading match history...
+        </p>
+      )}
 
       {error && (
         <p className="matches__message">
@@ -89,103 +140,151 @@ function Matches() {
       )}
 
       {!loading && !error && (
-        <div className="matches__list">
-          {matches.map((match) => {
-            const player = match.stats[0];
+        <>
+          <div className="match-summary">
+            <div className="match-summary__item">
+              <span>MATCHES</span>
+              <strong>{matchSummary.played}</strong>
+            </div>
 
-            if (!player) {
-              return null;
-            }
+            <div className="match-summary__item">
+              <span>WINS</span>
+              <strong>{matchSummary.wins}</strong>
+            </div>
 
-            const playerTeam = match.team_scores.find(
-              (team) => team.team_number === player.initial_team_number,
-            );
+            <div className="match-summary__item">
+              <span>LOSSES</span>
+              <strong>{matchSummary.losses}</strong>
+            </div>
 
-            const opponentTeam = match.team_scores.find(
-              (team) => team.team_number !== player.initial_team_number,
-            );
+            <div className="match-summary__item">
+              <span>DRAWS</span>
+              <strong>{matchSummary.draws}</strong>
+            </div>
 
-            const playerScore = playerTeam?.score ?? 0;
-            const opponentScore = opponentTeam?.score ?? 0;
+            <div className="match-summary__item">
+              <span>WIN RATE</span>
+              <strong>{winRate}%</strong>
+            </div>
+          </div>
 
-            const result =
-              playerScore > opponentScore
-                ? "WIN"
-                : playerScore < opponentScore
-                  ? "LOSS"
-                  : "DRAW";
+          <div className="matches__list">
+            {matches.map((match) => {
+              const player = match.stats[0];
 
-            return (
-              <article
-                className={`match-card match-card--${result.toLowerCase()}`}
-                key={match.id}
-              >
-                <div className="match-card__meta">
-                  <span
-                    className={`match-card__result match-card__result--${result.toLowerCase()}`}
-                  >
-                    {result}
-                  </span>
+              if (!player) {
+                return null;
+              }
 
-                  <span>{formatDate(match.finished_at)}</span>
-                </div>
+              const playerTeam = match.team_scores.find(
+                (team) =>
+                  team.team_number === player.initial_team_number,
+              );
 
-                <div className="match-card__main">
-                  <div>
-                    <span className="match-card__label">MAP</span>
-                    <h3>{formatMapName(match.map_name)}</h3>
+              const opponentTeam = match.team_scores.find(
+                (team) =>
+                  team.team_number !== player.initial_team_number,
+              );
+
+              const playerScore = playerTeam?.score ?? 0;
+              const opponentScore = opponentTeam?.score ?? 0;
+
+              const result =
+                playerScore > opponentScore
+                  ? "WIN"
+                  : playerScore < opponentScore
+                    ? "LOSS"
+                    : "DRAW";
+
+              return (
+                <article
+                  className={`match-card match-card--${result.toLowerCase()}`}
+                  key={match.id}
+                >
+                  <div className="match-card__meta">
+                    <span
+                      className={`match-card__result match-card__result--${result.toLowerCase()}`}
+                    >
+                      {result}
+                    </span>
+
+                    <span>{formatDate(match.finished_at)}</span>
                   </div>
 
-                  <div className="match-card__score">
-                    <span>{playerScore}</span>
-                    <small>:</small>
-                    <span>{opponentScore}</span>
-                  </div>
-                </div>
+                  <div className="match-card__main">
+                    <div>
+                      <span className="match-card__label">
+                        MAP
+                      </span>
 
-                <div className="match-card__players">
-                  {match.stats.map((player) => (
-                    <div className="match-player" key={player.steam64_id}>
-                      <div className="match-player__name">
-                        <span>PLAYER</span>
-                        <strong>{player.name}</strong>
-                      </div>
-
-                      <div>
-                        <span>K / D / A</span>
-                        <strong>
-                          {player.total_kills} / {player.total_deaths} /{" "}
-                          {player.total_assists}
-                        </strong>
-                      </div>
-
-                      <div>
-                        <span>K/D</span>
-                        <strong>{player.kd_ratio.toFixed(2)}</strong>
-                      </div>
-
-                      <div>
-                        <span>HS</span>
-                        <strong>{player.total_hs_kills}</strong>
-                      </div>
-
-                      <div>
-                        <span>LEETIFY</span>
-                        <strong>
-                          {player.leetify_rating > 0 ? "+" : ""}
-                          {player.leetify_rating.toFixed(3)}
-                        </strong>
-                      </div>
+                      <h3>
+                        {formatMapName(match.map_name)}
+                      </h3>
                     </div>
-                  ))}
-                </div>
-              </article>
-            );
-          })}
-        </div>
+
+                    <div className="match-card__score">
+                      <span>{playerScore}</span>
+                      <small>:</small>
+                      <span>{opponentScore}</span>
+                    </div>
+                  </div>
+
+                  <div className="match-card__players">
+                    {match.stats.map((player) => (
+                      <div
+                        className="match-player"
+                        key={player.steam64_id}
+                      >
+                        <div className="match-player__name">
+                          <span>PLAYER</span>
+                          <strong>{player.name}</strong>
+                        </div>
+
+                        <div>
+                          <span>K / D / A</span>
+                          <strong>
+                            {player.total_kills} /{" "}
+                            {player.total_deaths} /{" "}
+                            {player.total_assists}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>K/D</span>
+                          <strong>
+                            {player.kd_ratio.toFixed(2)}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>HS</span>
+                          <strong>
+                            {player.total_hs_kills}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>LEETIFY</span>
+                          <strong>
+                            {player.leetify_rating > 0
+                              ? "+"
+                              : ""}
+                            {player.leetify_rating.toFixed(3)}
+                          </strong>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </>
       )}
 
-      <div className="matches__credit">Data Provided by Leetify</div>
+      <div className="matches__credit">
+        Data Provided by Leetify
+      </div>
     </section>
   );
 }
