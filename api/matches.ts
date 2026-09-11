@@ -11,33 +11,42 @@ const PLAYERS = [
   },
 ];
 
+type TeamScore = {
+  team_number: number;
+  score: number;
+};
+
+type PlayerStats = {
+  steam64_id: string;
+  name: string;
+  initial_team_number: number;
+
+  total_kills: number;
+  total_deaths: number;
+  total_assists: number;
+  total_hs_kills: number;
+
+  kd_ratio: number;
+  leetify_rating: number;
+};
+
 type LeetifyMatch = {
   id: string;
   finished_at: string;
+
   data_source: string;
   data_source_match_id: string;
+
   map_name: string;
   has_banned_player: boolean;
-  team_scores: {
-    team_number: number;
-    score: number;
-  }[];
-  stats: {
-    steam64_id: string;
-    name: string;
-    initial_team_number: number;
-    total_kills: number;
-    total_deaths: number;
-    total_assists: number;
-    total_hs_kills: number;
-    kd_ratio: number;
-    leetify_rating: number;
-  }[];
+
+  team_scores: TeamScore[];
+  stats: PlayerStats[];
 };
 
 export default async function handler(
   req: VercelRequest,
-  res: VercelResponse
+  res: VercelResponse,
 ) {
   try {
     const apiKey = process.env.LEETIFY_API_KEY;
@@ -48,7 +57,7 @@ export default async function handler(
       });
     }
 
-    const results = await Promise.all(
+    const requests = await Promise.allSettled(
       PLAYERS.map(async (player) => {
         const response = await fetch(
           `https://api-public.cs-prod.leetify.com/v3/profile/matches?steam64_id=${player.steamId}`,
@@ -56,29 +65,51 @@ export default async function handler(
             headers: {
               Authorization: `Bearer ${apiKey}`,
             },
-          }
+          },
         );
 
         if (!response.ok) {
           throw new Error(
-            `Failed to fetch matches for ${player.name}: ${response.status}`
+            `Failed to fetch matches for ${player.name}: ${response.status}`,
           );
         }
 
         return (await response.json()) as LeetifyMatch[];
-      })
+      }),
     );
 
-    const allMatches = results.flat();
+    const successfulResults = requests
+      .filter(
+        (
+          result,
+        ): result is PromiseFulfilledResult<LeetifyMatch[]> =>
+          result.status === "fulfilled",
+      )
+      .map((result) => result.value);
 
+    if (successfulResults.length === 0) {
+      return res.status(502).json({
+        error: "Could not fetch matches from Leetify",
+      });
+    }
+
+    const allMatches = successfulResults.flat();
+
+    /*
+     * Brotato and Selnes receive separate responses from Leetify.
+     *
+     * If they played the same match, the match itself has the same
+     * data_source_match_id. We therefore merge those two entries and
+     * keep both players' stats on the resulting match.
+     */
     const groupedMatches = new Map<string, LeetifyMatch>();
 
     for (const match of allMatches) {
       const matchKey = match.data_source_match_id || match.id;
 
-      const existing = groupedMatches.get(matchKey);
+      const existingMatch = groupedMatches.get(matchKey);
 
-      if (!existing) {
+      if (!existingMatch) {
         groupedMatches.set(matchKey, {
           ...match,
           stats: [...match.stats],
@@ -87,14 +118,14 @@ export default async function handler(
         continue;
       }
 
-      for (const stat of match.stats) {
-        const alreadyExists = existing.stats.some(
-          (existingStat) =>
-            existingStat.steam64_id === stat.steam64_id
+      for (const playerStats of match.stats) {
+        const alreadyExists = existingMatch.stats.some(
+          (existingPlayer) =>
+            existingPlayer.steam64_id === playerStats.steam64_id,
         );
 
         if (!alreadyExists) {
-          existing.stats.push(stat);
+          existingMatch.stats.push(playerStats);
         }
       }
     }
@@ -103,9 +134,9 @@ export default async function handler(
       .sort(
         (a, b) =>
           new Date(b.finished_at).getTime() -
-          new Date(a.finished_at).getTime()
+          new Date(a.finished_at).getTime(),
       )
-      .slice(0, 10);
+      .slice(0, 30);
 
     return res.status(200).json(matches);
   } catch (error) {
