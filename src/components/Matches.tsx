@@ -7,6 +7,7 @@ type TeamScore = {
 };
 
 type PlayerStats = {
+  steam64_id: string;
   name: string;
   initial_team_number: number;
   total_kills: number;
@@ -27,10 +28,7 @@ type Match = {
 };
 
 function formatMapName(mapName: string) {
-  return mapName
-    .replace("de_", "")
-    .replace("cs_", "")
-    .toUpperCase();
+  return mapName.replace("de_", "").replace("cs_", "").toUpperCase();
 }
 
 function formatDate(date: string) {
@@ -79,14 +77,10 @@ function Matches() {
           <h2>RECENT GAMES.</h2>
         </div>
 
-        <span className="matches__status">
-          POWERED BY QUESTIONABLE AIM
-        </span>
+        <span className="matches__status">POWERED BY QUESTIONABLE AIM</span>
       </div>
 
-      {loading && (
-        <p className="matches__message">Loading match history...</p>
-      )}
+      {loading && <p className="matches__message">Loading match history...</p>}
 
       {error && (
         <p className="matches__message">
@@ -104,13 +98,11 @@ function Matches() {
             }
 
             const playerTeam = match.team_scores.find(
-              (team) =>
-                team.team_number === player.initial_team_number
+              (team) => team.team_number === player.initial_team_number,
             );
 
             const opponentTeam = match.team_scores.find(
-              (team) =>
-                team.team_number !== player.initial_team_number
+              (team) => team.team_number !== player.initial_team_number,
             );
 
             const playerScore = playerTeam?.score ?? 0;
@@ -135,9 +127,7 @@ function Matches() {
                     {result}
                   </span>
 
-                  <span>
-                    {formatDate(match.finished_at)}
-                  </span>
+                  <span>{formatDate(match.finished_at)}</span>
                 </div>
 
                 <div className="match-card__main">
@@ -153,37 +143,41 @@ function Matches() {
                   </div>
                 </div>
 
-                <div className="match-card__stats">
-                  <div>
-                    <span>PLAYER</span>
-                    <strong>{player.name}</strong>
-                  </div>
+                <div className="match-card__players">
+                  {match.stats.map((player) => (
+                    <div className="match-player" key={player.steam64_id}>
+                      <div className="match-player__name">
+                        <span>PLAYER</span>
+                        <strong>{player.name}</strong>
+                      </div>
 
-                  <div>
-                    <span>K / D / A</span>
-                    <strong>
-                      {player.total_kills} / {player.total_deaths} /{" "}
-                      {player.total_assists}
-                    </strong>
-                  </div>
+                      <div>
+                        <span>K / D / A</span>
+                        <strong>
+                          {player.total_kills} / {player.total_deaths} /{" "}
+                          {player.total_assists}
+                        </strong>
+                      </div>
 
-                  <div>
-                    <span>K/D</span>
-                    <strong>{player.kd_ratio.toFixed(2)}</strong>
-                  </div>
+                      <div>
+                        <span>K/D</span>
+                        <strong>{player.kd_ratio.toFixed(2)}</strong>
+                      </div>
 
-                  <div>
-                    <span>HS</span>
-                    <strong>{player.total_hs_kills}</strong>
-                  </div>
+                      <div>
+                        <span>HS</span>
+                        <strong>{player.total_hs_kills}</strong>
+                      </div>
 
-                  <div>
-                    <span>LEETIFY</span>
-                    <strong>
-                      {player.leetify_rating > 0 ? "+" : ""}
-                      {player.leetify_rating.toFixed(3)}
-                    </strong>
-                  </div>
+                      <div>
+                        <span>LEETIFY</span>
+                        <strong>
+                          {player.leetify_rating > 0 ? "+" : ""}
+                          {player.leetify_rating.toFixed(3)}
+                        </strong>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </article>
             );
@@ -191,9 +185,7 @@ function Matches() {
         </div>
       )}
 
-      <div className="matches__credit">
-        Data Provided by Leetify
-      </div>
+      <div className="matches__credit">Data Provided by Leetify</div>
     </section>
   );
 }
