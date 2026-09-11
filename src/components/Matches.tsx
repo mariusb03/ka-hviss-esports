@@ -1,62 +1,198 @@
+import { useEffect, useState } from "react";
 import "./Matches.css";
 
-const matches = [
-  {
-    opponent: "TBD",
-    event: "Upcoming CS2 Match",
-    date: "TBA",
-    time: "TBA",
-    status: "UPCOMING",
-  },
-  {
-    opponent: "TBD",
-    event: "Practice Match",
-    date: "TBA",
-    time: "TBA",
-    status: "UPCOMING",
-  },
-];
+type TeamScore = {
+  team_number: number;
+  score: number;
+};
+
+type PlayerStats = {
+  name: string;
+  initial_team_number: number;
+  total_kills: number;
+  total_deaths: number;
+  total_assists: number;
+  total_hs_kills: number;
+  kd_ratio: number;
+  leetify_rating: number;
+};
+
+type Match = {
+  id: string;
+  finished_at: string;
+  data_source: string;
+  map_name: string;
+  team_scores: TeamScore[];
+  stats: PlayerStats[];
+};
+
+function formatMapName(mapName: string) {
+  return mapName
+    .replace("de_", "")
+    .replace("cs_", "")
+    .toUpperCase();
+}
+
+function formatDate(date: string) {
+  return new Intl.DateTimeFormat("no-NO", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(date));
+}
 
 function Matches() {
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function loadMatches() {
+      try {
+        const response = await fetch("/api/matches");
+
+        if (!response.ok) {
+          throw new Error("Could not load matches");
+        }
+
+        const data = await response.json();
+
+        setMatches(data.slice(0, 5));
+      } catch (error) {
+        console.error(error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadMatches();
+  }, []);
+
   return (
     <section className="matches" id="matches">
       <div className="matches__header">
         <div>
-          <span className="matches__eyebrow">CS2 / MATCHES</span>
-          <h2>UP NEXT.</h2>
+          <span className="matches__eyebrow">CS2 / MATCH HISTORY</span>
+          <h2>RECENT GAMES.</h2>
         </div>
 
-        <span className="matches__status">READY WHEN YOU ARE</span>
+        <span className="matches__status">
+          POWERED BY QUESTIONABLE AIM
+        </span>
       </div>
 
-      <div className="matches__list">
-        {matches.map((match, index) => (
-          <article className="match-card" key={index}>
-            <div className="match-card__meta">
-              <span className="match-card__status">{match.status}</span>
-              <span>{match.event}</span>
-            </div>
+      {loading && (
+        <p className="matches__message">Loading match history...</p>
+      )}
 
-            <div className="match-card__teams">
-              <div>
-                <span className="match-card__label">TEAM</span>
-                <h3>KA HVISS?</h3>
-              </div>
+      {error && (
+        <p className="matches__message">
+          Match history is currently unavailable.
+        </p>
+      )}
 
-              <span className="match-card__vs">VS</span>
+      {!loading && !error && (
+        <div className="matches__list">
+          {matches.map((match) => {
+            const player = match.stats[0];
 
-              <div className="match-card__opponent">
-                <span className="match-card__label">OPPONENT</span>
-                <h3>{match.opponent}</h3>
-              </div>
-            </div>
+            if (!player) {
+              return null;
+            }
 
-            <div className="match-card__schedule">
-              <span>{match.date}</span>
-              <span>{match.time}</span>
-            </div>
-          </article>
-        ))}
+            const playerTeam = match.team_scores.find(
+              (team) =>
+                team.team_number === player.initial_team_number
+            );
+
+            const opponentTeam = match.team_scores.find(
+              (team) =>
+                team.team_number !== player.initial_team_number
+            );
+
+            const playerScore = playerTeam?.score ?? 0;
+            const opponentScore = opponentTeam?.score ?? 0;
+
+            const result =
+              playerScore > opponentScore
+                ? "WIN"
+                : playerScore < opponentScore
+                  ? "LOSS"
+                  : "DRAW";
+
+            return (
+              <article
+                className={`match-card match-card--${result.toLowerCase()}`}
+                key={match.id}
+              >
+                <div className="match-card__meta">
+                  <span
+                    className={`match-card__result match-card__result--${result.toLowerCase()}`}
+                  >
+                    {result}
+                  </span>
+
+                  <span>
+                    {formatDate(match.finished_at)}
+                  </span>
+                </div>
+
+                <div className="match-card__main">
+                  <div>
+                    <span className="match-card__label">MAP</span>
+                    <h3>{formatMapName(match.map_name)}</h3>
+                  </div>
+
+                  <div className="match-card__score">
+                    <span>{playerScore}</span>
+                    <small>:</small>
+                    <span>{opponentScore}</span>
+                  </div>
+                </div>
+
+                <div className="match-card__stats">
+                  <div>
+                    <span>PLAYER</span>
+                    <strong>{player.name}</strong>
+                  </div>
+
+                  <div>
+                    <span>K / D / A</span>
+                    <strong>
+                      {player.total_kills} / {player.total_deaths} /{" "}
+                      {player.total_assists}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>K/D</span>
+                    <strong>{player.kd_ratio.toFixed(2)}</strong>
+                  </div>
+
+                  <div>
+                    <span>HS</span>
+                    <strong>{player.total_hs_kills}</strong>
+                  </div>
+
+                  <div>
+                    <span>LEETIFY</span>
+                    <strong>
+                      {player.leetify_rating > 0 ? "+" : ""}
+                      {player.leetify_rating.toFixed(3)}
+                    </strong>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="matches__credit">
+        Data Provided by Leetify
       </div>
     </section>
   );
