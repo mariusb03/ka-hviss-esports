@@ -1,4 +1,8 @@
 .matches {
+  width: 100%;
+  max-width: 100%;
+
+  overflow-x: hidden;
   padding: 120px 48px;
 
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -672,7 +676,7 @@
 
 /* MOBILE */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .solo-feed__divider {
     position: relative;
 
