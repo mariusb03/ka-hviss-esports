@@ -25,6 +25,24 @@ const players = [
     role: "CS2 PLAYER",
     number: "04",
   },
+  {
+    name: "Gutta",
+    image: "/players/gutta.png",
+    role: "CS2 PLAYER",
+    number: "05",
+  },
+  {
+    name: "PetterJY",
+    image: "/players/petterjy.png",
+    role: "CS2 PLAYER",
+    number: "06",
+  },
+  {
+    name: "evgiS",
+    image: "/players/evgis.png",
+    role: "CS2 PLAYER",
+    number: "07",
+  },
 ];
 
 function Team() {
@@ -46,7 +64,10 @@ function Team() {
 
       <div className="team__grid">
         {players.map((player) => (
-          <article className="player-card" key={player.name}>
+          <article
+            className="player-card"
+            key={player.name}
+          >
             <div className="player-card__image">
               <img
                 src={player.image}

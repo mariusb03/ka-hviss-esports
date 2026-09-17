@@ -1,4 +1,7 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type {
+  VercelRequest,
+  VercelResponse,
+} from "@vercel/node";
 
 const PLAYERS = [
   {
@@ -17,6 +20,18 @@ const PLAYERS = [
     name: "Ewan M+cgregor",
     steamId: "76561198176454129",
   },
+  {
+    name: "Gutta",
+    steamId: "76561198297944771",
+  },
+  {
+    name: "PetterJY",
+    steamId: "76561198390883769",
+  },
+  {
+    name: "evgiS",
+    steamId: "76561198171470569",
+  },
 ];
 
 type TeamScore = {
@@ -27,6 +42,7 @@ type TeamScore = {
 type PlayerStats = {
   steam64_id: string;
   name: string;
+
   initial_team_number: number;
 
   total_kills: number;
@@ -40,6 +56,7 @@ type PlayerStats = {
 
 type LeetifyMatch = {
   id: string;
+
   finished_at: string;
 
   data_source: string;
@@ -57,7 +74,8 @@ export default async function handler(
   res: VercelResponse,
 ) {
   try {
-    const apiKey = process.env.LEETIFY_API_KEY;
+    const apiKey =
+      process.env.LEETIFY_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
@@ -65,49 +83,56 @@ export default async function handler(
       });
     }
 
-    const requests = await Promise.allSettled(
-      PLAYERS.map(async (player) => {
-        const response = await fetch(
-          `https://api-public.cs-prod.leetify.com/v3/profile/matches?steam64_id=${player.steamId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
+    const requests =
+      await Promise.allSettled(
+        PLAYERS.map(async (player) => {
+          const response = await fetch(
+            `https://api-public.cs-prod.leetify.com/v3/profile/matches?steam64_id=${player.steamId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+              },
             },
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch matches for ${player.name}: ${response.status}`,
           );
-        }
 
-        return (await response.json()) as LeetifyMatch[];
-      }),
-    );
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch matches for ${player.name}: ${response.status}`,
+            );
+          }
+
+          return (await response.json()) as LeetifyMatch[];
+        }),
+      );
 
     const successfulResults = requests
       .filter(
         (
           result,
-        ): result is PromiseFulfilledResult<LeetifyMatch[]> =>
+        ): result is PromiseFulfilledResult<
+          LeetifyMatch[]
+        > =>
           result.status === "fulfilled",
       )
       .map((result) => result.value);
 
     if (successfulResults.length === 0) {
       return res.status(502).json({
-        error: "Could not fetch matches from Leetify",
+        error:
+          "Could not fetch matches from Leetify",
       });
     }
 
-    const allMatches = successfulResults.flat();
+    const allMatches =
+      successfulResults.flat();
 
-    const groupedMatches = new Map<string, LeetifyMatch>();
+    const groupedMatches =
+      new Map<string, LeetifyMatch>();
 
     for (const match of allMatches) {
       const matchKey =
-        match.data_source_match_id || match.id;
+        match.data_source_match_id ||
+        match.id;
 
       const existingMatch =
         groupedMatches.get(matchKey);
@@ -130,20 +155,24 @@ export default async function handler(
           );
 
         if (!alreadyExists) {
-          existingMatch.stats.push(playerStats);
+          existingMatch.stats.push(
+            playerStats,
+          );
         }
       }
     }
 
     const matches = Array.from(
       groupedMatches.values(),
-    )
-      .sort(
-        (a, b) =>
-          new Date(b.finished_at).getTime() -
-          new Date(a.finished_at).getTime(),
-      )
-      .slice(0, 60);
+    ).sort(
+      (a, b) =>
+        new Date(
+          b.finished_at,
+        ).getTime() -
+        new Date(
+          a.finished_at,
+        ).getTime(),
+    );
 
     return res.status(200).json(matches);
   } catch (error) {
