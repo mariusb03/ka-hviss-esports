@@ -3,47 +3,11 @@ import {
   useState,
 } from "react";
 
+import { players } from "../data/players";
+
 import "./Matches.css";
 
-const PLAYERS = [
-  {
-    name: "Brotato",
-    steamId: "76561198285667407",
-    number: "01",
-  },
-  {
-    name: "Selnes",
-    steamId: "76561198815099525",
-    number: "02",
-  },
-  {
-    name: "Toonga",
-    steamId: "76561198170149487",
-    number: "03",
-  },
-  {
-    name: "Ewan M+cgregor",
-    steamId: "76561198176454129",
-    number: "04",
-  },
-  {
-    name: "Gutta",
-    steamId: "76561198297944771",
-    number: "05",
-  },
-  {
-    name: "PetterJY",
-    steamId: "76561198390883769",
-    number: "06",
-  },
-  {
-    name: "evgiS",
-    steamId: "76561198171470569",
-    number: "07",
-  },
-];
-
-const PLAYER_IDS = PLAYERS.map(
+const PLAYER_IDS = players.map(
   (player) => player.steamId,
 );
 
@@ -61,7 +25,6 @@ type PlayerStats = {
   total_kills: number;
   total_deaths: number;
   total_assists: number;
-
   total_hs_kills: number;
 
   kd_ratio: number;
@@ -79,15 +42,7 @@ type Match = {
   stats: PlayerStats[];
 };
 
-type MatchColumnProps = {
-  eyebrow: string;
-  title: string;
-  matches: Match[];
-};
-
-function formatMapName(
-  mapName: string,
-) {
+function formatMapName(mapName: string) {
   return mapName
     .replace("de_", "")
     .replace("cs_", "")
@@ -95,20 +50,15 @@ function formatMapName(
 }
 
 function formatDate(date: string) {
-  return new Intl.DateTimeFormat(
-    "no-NO",
-    {
-      day: "2-digit",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    },
-  ).format(new Date(date));
+  return new Intl.DateTimeFormat("no-NO", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(date));
 }
 
-function formatGameMode(
-  dataSource: string,
-) {
+function formatGameMode(dataSource: string) {
   switch (dataSource) {
     case "matchmaking":
       return "PREMIER";
@@ -123,19 +73,13 @@ function formatGameMode(
   }
 }
 
-function formatLeetifyRating(
-  rating: number,
-) {
+function formatRating(rating: number) {
   const value = rating * 100;
 
-  return `${
-    value > 0 ? "+" : ""
-  }${value.toFixed(1)}`;
+  return `${value > 0 ? "+" : ""}${value.toFixed(1)}`;
 }
 
-function getRosterPlayers(
-  match: Match,
-) {
+function getRosterPlayers(match: Match) {
   return match.stats.filter(
     (player) =>
       PLAYER_IDS.includes(
@@ -144,12 +88,14 @@ function getRosterPlayers(
   );
 }
 
-function getMatchResult(
-  match: Match,
-) {
-  const player = match.stats[0];
+function getMatchResult(match: Match) {
+  const rosterPlayers =
+    getRosterPlayers(match);
 
-  if (!player) {
+  const referencePlayer =
+    rosterPlayers[0];
+
+  if (!referencePlayer) {
     return {
       result: "DRAW",
       playerScore: 0,
@@ -161,14 +107,14 @@ function getMatchResult(
     match.team_scores.find(
       (team) =>
         team.team_number ===
-        player.initial_team_number,
+        referencePlayer.initial_team_number,
     );
 
   const opponentTeam =
     match.team_scores.find(
       (team) =>
         team.team_number !==
-        player.initial_team_number,
+        referencePlayer.initial_team_number,
     );
 
   const playerScore =
@@ -177,15 +123,14 @@ function getMatchResult(
   const opponentScore =
     opponentTeam?.score ?? 0;
 
-  const result =
-    playerScore > opponentScore
-      ? "WIN"
-      : playerScore < opponentScore
-        ? "LOSS"
-        : "DRAW";
-
   return {
-    result,
+    result:
+      playerScore > opponentScore
+        ? "WIN"
+        : playerScore < opponentScore
+          ? "LOSS"
+          : "DRAW",
+
     playerScore,
     opponentScore,
   };
@@ -206,67 +151,65 @@ function MatchCard({
     getRosterPlayers(match);
 
   return (
-    <article
-      className={`compact-match compact-match--${result.toLowerCase()}`}
-    >
-      <div className="compact-match__top">
-        <div className="compact-match__badges">
+    <article className="team-match">
+      <div className="team-match__top">
+        <div className="team-match__badges">
           <span
-            className={`compact-match__result compact-match__result--${result.toLowerCase()}`}
+            className={`team-match__result team-match__result--${result.toLowerCase()}`}
           >
             {result}
           </span>
 
-          <span className="compact-match__mode">
+          <span className="team-match__mode">
             {formatGameMode(
               match.data_source,
             )}
           </span>
+
+          <span className="team-match__players-count">
+            {rosterPlayers.length} KA HVISS?
+          </span>
         </div>
 
-        <span className="compact-match__date">
+        <span className="team-match__date">
           {formatDate(
             match.finished_at,
           )}
         </span>
       </div>
 
-      <div className="compact-match__main">
+      <div className="team-match__main">
         <div>
-          <span className="compact-match__label">
+          <span className="team-match__label">
             MAP
           </span>
 
-          <h4>
+          <h3>
             {formatMapName(
               match.map_name,
             )}
-          </h4>
+          </h3>
         </div>
 
-        <div className="compact-match__score">
-          <strong>
-            {playerScore}
-          </strong>
+        <div className="team-match__score">
+          {playerScore}
 
-          <span>:</span>
+          <small>:</small>
 
-          <strong>
-            {opponentScore}
-          </strong>
+          {opponentScore}
         </div>
       </div>
 
-      <div className="compact-match__players">
+      <div className="team-match__roster">
         {rosterPlayers.map(
           (player) => (
             <div
-              className="compact-player"
+              className="team-match__player"
               key={
                 player.steam64_id
               }
             >
-              <div className="compact-player__header">
+              <div className="team-match__player-name">
                 <strong>
                   {player.name}
                 </strong>
@@ -279,175 +222,36 @@ function MatchCard({
                 </span>
               </div>
 
-              <div className="compact-player__stats">
-                <div>
-                  <span>K</span>
+              <div className="team-match__player-stats">
+                <span>
+                  {player.total_kills}K
+                </span>
 
-                  <strong>
-                    {
-                      player.total_kills
-                    }
-                  </strong>
-                </div>
+                <span>
+                  {player.total_deaths}D
+                </span>
 
-                <div>
-                  <span>D</span>
+                <span>
+                  {player.total_assists}A
+                </span>
 
-                  <strong>
-                    {
-                      player.total_deaths
-                    }
-                  </strong>
-                </div>
-
-                <div>
-                  <span>A</span>
-
-                  <strong>
-                    {
-                      player.total_assists
-                    }
-                  </strong>
-                </div>
-
-                <div>
-                  <span>HS</span>
-
-                  <strong>
-                    {
-                      player.total_hs_kills
-                    }
-                  </strong>
-                </div>
-
-                <div>
-                  <span>
-                    RATING
-                  </span>
-
-                  <strong
-                    className={
-                      player.leetify_rating >=
-                      0
-                        ? "rating rating--positive"
-                        : "rating rating--negative"
-                    }
-                  >
-                    {formatLeetifyRating(
-                      player.leetify_rating,
-                    )}
-                  </strong>
-                </div>
+                <strong
+                  className={
+                    player.leetify_rating >= 0
+                      ? "rating-positive"
+                      : "rating-negative"
+                  }
+                >
+                  {formatRating(
+                    player.leetify_rating,
+                  )}
+                </strong>
               </div>
             </div>
           ),
         )}
       </div>
     </article>
-  );
-}
-
-function MatchColumn({
-  eyebrow,
-  title,
-  matches,
-}: MatchColumnProps) {
-  return (
-    <div className="match-column">
-      <div className="match-column__header">
-        <div>
-          <span className="match-column__eyebrow">
-            {eyebrow}
-          </span>
-
-          <h3>{title}</h3>
-        </div>
-
-        <span className="match-column__count">
-          {String(
-            matches.length,
-          ).padStart(2, "0")}{" "}
-          MATCHES
-        </span>
-      </div>
-
-      <div className="match-column__list">
-        {matches.length > 0 ? (
-          matches.map((match) => (
-            <MatchCard
-              match={match}
-              key={match.id}
-            />
-          ))
-        ) : (
-          <div className="match-column__empty">
-            <span>
-              NO SOLO MATCHES FOUND
-            </span>
-
-            <p>
-              Apparently they have
-              friends.
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function TogetherMatches({
-  matches,
-}: {
-  matches: Match[];
-}) {
-  return (
-    <div className="together-feed">
-      <div className="together-feed__header">
-        <div>
-          <span>
-            KA HVISS? / CS2
-          </span>
-
-          <h3>TOGETHER.</h3>
-        </div>
-
-        <div className="together-feed__meta">
-          <span>
-            {String(
-              matches.length,
-            ).padStart(2, "0")}{" "}
-            MATCHES
-          </span>
-
-          <strong>
-            THE ACTUAL TEAM GAMES
-          </strong>
-        </div>
-      </div>
-
-      {matches.length > 0 ? (
-        <div className="together-feed__grid">
-          {matches.map((match) => (
-            <MatchCard
-              match={match}
-              key={match.id}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="match-column__empty">
-          <span>
-            NO TEAM GAMES FOUND
-          </span>
-
-          <p>
-            Seven players and nobody
-            managed to queue together.
-          </p>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -465,9 +269,7 @@ function Matches() {
     async function loadMatches() {
       try {
         const response =
-          await fetch(
-            "/api/matches",
-          );
+          await fetch("/api/matches");
 
         if (!response.ok) {
           throw new Error(
@@ -491,46 +293,6 @@ function Matches() {
     loadMatches();
   }, []);
 
-  /*
-   * Together = at least two current
-   * Ka Hviss? players in the same game.
-   */
-  const togetherMatches =
-    matches
-      .filter(
-        (match) =>
-          getRosterPlayers(
-            match,
-          ).length >= 2,
-      )
-      .slice(0, 6);
-
-  /*
-   * Individual form only:
-   * the player participated without
-   * another Ka Hviss? player.
-   */
-  function getSoloMatches(
-    steamId: string,
-  ) {
-    return matches
-      .filter((match) => {
-        const rosterPlayers =
-          getRosterPlayers(
-            match,
-          );
-
-        return (
-          rosterPlayers.length ===
-            1 &&
-          rosterPlayers[0]
-            .steam64_id ===
-            steamId
-        );
-      })
-      .slice(0, 5);
-  }
-
   return (
     <section
       className="matches"
@@ -539,98 +301,69 @@ function Matches() {
       <div className="matches__header">
         <div>
           <span className="matches__eyebrow">
-            CS2 / MATCH FEED
+            KA HVISS? / CS2
           </span>
 
-          <h2>
-            RECENT GAMES.
-          </h2>
+          <h2>RECENT GAMES.</h2>
         </div>
 
-        <span className="matches__status">
-          QUESTIONABLE FORM /
-          LIVE DATA
-        </span>
-      </div>
-
-      {loading && (
-        <div className="matches__message">
+        <div className="matches__header-meta">
           <span>
-            LOADING
+            TEAM MATCHES ONLY
           </span>
 
           <p>
-            Investigating recent
-            questionable decisions...
+            At least two roster members.
+          </p>
+        </div>
+      </div>
+
+      {loading && (
+        <div className="matches__state">
+          <span>LOADING MATCH FEED</span>
+
+          <p>
+            Searching for teamwork...
           </p>
         </div>
       )}
 
       {error && (
-        <div className="matches__message">
-          <span>
-            OFFLINE
-          </span>
+        <div className="matches__state">
+          <span>OFFLINE</span>
 
           <p>
-            Match history is currently
-            unavailable.
+            Match history is currently unavailable.
           </p>
         </div>
       )}
 
-      {!loading && !error && (
-        <>
-          <TogetherMatches
-            matches={
-              togetherMatches
-            }
-          />
-
-          <div className="solo-feed__divider">
-            <div className="solo-feed__divider-line" />
-
-            <div className="solo-feed__divider-content">
-              <span className="solo-feed__divider-eyebrow">
-                SOLO QUEUE /
-                INDIVIDUAL FORM
-              </span>
-
-              <h3>
-                ON THEIR OWN.
-              </h3>
-
-              <p>
-                Recent matches
-                played without
-                another Ka Hviss?
-                player.
-              </p>
-            </div>
-
-            <div className="solo-feed__divider-line" />
+      {!loading &&
+        !error &&
+        matches.length > 0 && (
+          <div className="matches__grid">
+            {matches.map((match) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+              />
+            ))}
           </div>
+        )}
 
-          <div className="match-columns">
-            {PLAYERS.map(
-              (player) => (
-                <MatchColumn
-                  key={
-                    player.steamId
-                  }
-                  eyebrow={`SOLO MATCHES / ${player.number}`}
-                  title={
-                    player.name
-                  }
-                  matches={getSoloMatches(
-                    player.steamId,
-                  )}
-                />
-              ),
-            )}
+      {!loading &&
+        !error &&
+        matches.length === 0 && (
+          <div className="matches__state">
+            <span>
+              NO TEAM MATCHES FOUND
+            </span>
+
+            <p>
+              Seven players. Somehow nobody queued together.
+            </p>
           </div>
-        </>
-      )}
+        )}
 
       <div className="matches__credit">
         DATA PROVIDED BY LEETIFY

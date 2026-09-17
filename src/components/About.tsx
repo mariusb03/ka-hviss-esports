@@ -16,29 +16,32 @@ function About() {
       <div className="about__grid">
         <div className="about__title">
           <h2>
-            TWO PLAYERS.
+            ONE TEAM.
             <br />
-            ONE QUESTION.
+            SEVEN PROBLEMS.
           </h2>
         </div>
 
         <div className="about__content">
           <p className="about__lead">
-            Ka Hviss? E-Sports is a highly professional
-            Counter-Strike 2 organisation consisting of
-            exactly two people.
+            Ka Hviss? E-Sports is a highly
+            professional Counter-Strike 2
+            organisation consisting of seven
+            remarkably qualified individuals.
           </p>
 
           <p>
-            We play Premier. We play Competitive. Sometimes
-            we even play together. Results may vary.
+            We play Premier. We play Competitive.
+            Occasionally, several of us even manage
+            to queue at the same time.
           </p>
 
           <p>
-            What began as two players queueing CS2 has,
-            for reasons still under investigation, resulted
-            in an esports brand, a live match feed and an
-            unnecessarily professional website.
+            What started as people playing CS2 has,
+            for reasons still under investigation,
+            resulted in a seven-player roster, live
+            Leetify integration and an unnecessarily
+            professional esports website.
           </p>
 
           <div className="about__quote">

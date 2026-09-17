@@ -1,51 +1,23 @@
+import { useState } from "react";
+
+import PlayerProfile from "./PlayerProfile";
+import { players } from "../data/players";
+import type { Player } from "../data/players";
+
 import "./Team.css";
 
-const players = [
-  {
-    name: "Brotato",
-    image: "/players/brotato.png",
-    role: "CS2 PLAYER",
-    number: "01",
-  },
-  {
-    name: "Selnes",
-    image: "/players/selnes.png",
-    role: "CS2 PLAYER",
-    number: "02",
-  },
-  {
-    name: "Toonga",
-    image: "/players/toonga.png",
-    role: "CS2 PLAYER",
-    number: "03",
-  },
-  {
-    name: "Ewan M+cgregor",
-    image: "/players/ewan-mcgregor.png",
-    role: "CS2 PLAYER",
-    number: "04",
-  },
-  {
-    name: "Gutta",
-    image: "/players/gutta.png",
-    role: "CS2 PLAYER",
-    number: "05",
-  },
-  {
-    name: "PetterJY",
-    image: "/players/petterjy.png",
-    role: "CS2 PLAYER",
-    number: "06",
-  },
-  {
-    name: "evgiS",
-    image: "/players/evgis.png",
-    role: "CS2 PLAYER",
-    number: "07",
-  },
-];
-
 function Team() {
+  const [selectedPlayer, setSelectedPlayer] =
+    useState<Player | null>(null);
+
+  function handlePlayerClick(player: Player) {
+    setSelectedPlayer((current) =>
+      current?.steamId === player.steamId
+        ? null
+        : player,
+    );
+  }
+
   return (
     <section className="team" id="teams">
       <div className="team__header">
@@ -57,44 +29,77 @@ function Team() {
           <h2>MEET THE TEAM.</h2>
         </div>
 
-        <span className="team__count">
-          {String(players.length).padStart(2, "0")} PLAYERS
-        </span>
+        <div className="team__meta">
+          <span className="team__count">
+            {String(players.length).padStart(2, "0")} PLAYERS
+          </span>
+
+          <span className="team__hint">
+            SELECT A PLAYER
+          </span>
+        </div>
       </div>
 
-      <div className="team__grid">
-        {players.map((player) => (
-          <article
-            className="player-card"
-            key={player.name}
-          >
-            <div className="player-card__image">
-              <img
-                src={player.image}
-                alt={player.name}
-              />
+      <div className="team__rail">
+        <div className="team__grid">
+          {players.map((player) => {
+            const isSelected =
+              selectedPlayer?.steamId === player.steamId;
 
-              <span className="player-card__number">
-                {player.number}
-              </span>
-            </div>
+            return (
+              <button
+                type="button"
+                className={`player-card ${
+                  isSelected
+                    ? "player-card--selected"
+                    : ""
+                }`}
+                key={player.steamId}
+                onClick={() => handlePlayerClick(player)}
+                aria-expanded={isSelected}
+              >
+                <div className="player-card__image">
+                  <img
+                    src={player.image}
+                    alt={player.name}
+                  />
 
-            <div className="player-card__info">
-              <div>
-                <span className="player-card__role">
-                  {player.role}
-                </span>
+                  <span className="player-card__number">
+                    {player.number}
+                  </span>
 
-                <h3>{player.name}</h3>
-              </div>
+                  {isSelected && (
+                    <span className="player-card__active">
+                      ACTIVE
+                    </span>
+                  )}
+                </div>
 
-              <span className="player-card__arrow">
-                ↗
-              </span>
-            </div>
-          </article>
-        ))}
+                <div className="player-card__info">
+                  <div>
+                    <span className="player-card__role">
+                      {player.role}
+                    </span>
+
+                    <h3>{player.name}</h3>
+                  </div>
+
+                  <span className="player-card__arrow">
+                    {isSelected ? "↓" : "↗"}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {selectedPlayer && (
+        <PlayerProfile
+          key={selectedPlayer.steamId}
+          player={selectedPlayer}
+        />
+      )}
     </section>
   );
 }

@@ -1,17 +1,22 @@
 import "./Footer.css";
 
 function Footer() {
-  const year = new Date().getFullYear();
+  const year =
+    new Date().getFullYear();
 
   return (
     <footer className="footer">
       <div className="footer__top">
         <div className="footer__brand">
           <span>KA HVISS?</span>
+
           <small>E-SPORTS</small>
         </div>
 
-        <a href="#home" className="footer__back">
+        <a
+          href="#home"
+          className="footer__back"
+        >
           BACK TO TOP ↑
         </a>
       </div>
@@ -32,7 +37,7 @@ function Footer() {
         </span>
 
         <span>
-          TWO PLAYERS. ZERO INVESTORS.
+          SEVEN PLAYERS. STILL ZERO INVESTORS.
         </span>
 
         <span>

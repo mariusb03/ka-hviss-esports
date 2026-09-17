@@ -4,35 +4,16 @@ import type {
 } from "@vercel/node";
 
 const PLAYERS = [
-  {
-    name: "Brotato",
-    steamId: "76561198285667407",
-  },
-  {
-    name: "Selnes",
-    steamId: "76561198815099525",
-  },
-  {
-    name: "Toonga",
-    steamId: "76561198170149487",
-  },
-  {
-    name: "Ewan M+cgregor",
-    steamId: "76561198176454129",
-  },
-  {
-    name: "Gutta",
-    steamId: "76561198297944771",
-  },
-  {
-    name: "PetterJY",
-    steamId: "76561198390883769",
-  },
-  {
-    name: "evgiS",
-    steamId: "76561198171470569",
-  },
+  "76561198285667407",
+  "76561198815099525",
+  "76561198170149487",
+  "76561198176454129",
+  "76561198297944771",
+  "76561198390883769",
+  "76561198171470569",
 ];
+
+const PLAYER_IDS = new Set(PLAYERS);
 
 type TeamScore = {
   team_number: number;
@@ -63,7 +44,6 @@ type LeetifyMatch = {
   data_source_match_id: string;
 
   map_name: string;
-  has_banned_player: boolean;
 
   team_scores: TeamScore[];
   stats: PlayerStats[];
@@ -85,9 +65,9 @@ export default async function handler(
 
     const requests =
       await Promise.allSettled(
-        PLAYERS.map(async (player) => {
+        PLAYERS.map(async (steamId) => {
           const response = await fetch(
-            `https://api-public.cs-prod.leetify.com/v3/profile/matches?steam64_id=${player.steamId}`,
+            `https://api-public.cs-prod.leetify.com/v3/profile/matches?steam64_id=${steamId}`,
             {
               headers: {
                 Authorization: `Bearer ${apiKey}`,
@@ -97,7 +77,7 @@ export default async function handler(
 
           if (!response.ok) {
             throw new Error(
-              `Failed to fetch matches for ${player.name}: ${response.status}`,
+              `Failed to fetch ${steamId}`,
             );
           }
 
@@ -105,7 +85,7 @@ export default async function handler(
         }),
       );
 
-    const successfulResults = requests
+    const allMatches = requests
       .filter(
         (
           result,
@@ -114,31 +94,28 @@ export default async function handler(
         > =>
           result.status === "fulfilled",
       )
-      .map((result) => result.value);
+      .flatMap((result) => result.value);
 
-    if (successfulResults.length === 0) {
+    if (allMatches.length === 0) {
       return res.status(502).json({
         error:
           "Could not fetch matches from Leetify",
       });
     }
 
-    const allMatches =
-      successfulResults.flat();
-
     const groupedMatches =
       new Map<string, LeetifyMatch>();
 
     for (const match of allMatches) {
-      const matchKey =
+      const key =
         match.data_source_match_id ||
         match.id;
 
-      const existingMatch =
-        groupedMatches.get(matchKey);
+      const existing =
+        groupedMatches.get(key);
 
-      if (!existingMatch) {
-        groupedMatches.set(matchKey, {
+      if (!existing) {
+        groupedMatches.set(key, {
           ...match,
           stats: [...match.stats],
         });
@@ -146,35 +123,45 @@ export default async function handler(
         continue;
       }
 
-      for (const playerStats of match.stats) {
+      for (const stats of match.stats) {
         const alreadyExists =
-          existingMatch.stats.some(
-            (existingPlayer) =>
-              existingPlayer.steam64_id ===
-              playerStats.steam64_id,
+          existing.stats.some(
+            (existingStats) =>
+              existingStats.steam64_id ===
+              stats.steam64_id,
           );
 
         if (!alreadyExists) {
-          existingMatch.stats.push(
-            playerStats,
-          );
+          existing.stats.push(stats);
         }
       }
     }
 
-    const matches = Array.from(
+    const teamMatches = Array.from(
       groupedMatches.values(),
-    ).sort(
-      (a, b) =>
-        new Date(
-          b.finished_at,
-        ).getTime() -
-        new Date(
-          a.finished_at,
-        ).getTime(),
-    );
+    )
+      .filter((match) => {
+        const rosterPlayers =
+          match.stats.filter((stats) =>
+            PLAYER_IDS.has(
+              stats.steam64_id,
+            ),
+          );
 
-    return res.status(200).json(matches);
+        return rosterPlayers.length >= 2;
+      })
+      .sort(
+        (a, b) =>
+          new Date(
+            b.finished_at,
+          ).getTime() -
+          new Date(
+            a.finished_at,
+          ).getTime(),
+      )
+      .slice(0, 9);
+
+    return res.status(200).json(teamMatches);
   } catch (error) {
     console.error(error);
 
