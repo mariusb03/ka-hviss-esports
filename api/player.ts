@@ -26,7 +26,10 @@ export default async function handler(
         ? req.query.steamId
         : "";
 
-    if (!steamId || !ALLOWED_PLAYERS.has(steamId)) {
+    if (
+      !steamId ||
+      !ALLOWED_PLAYERS.has(steamId)
+    ) {
       return res.status(400).json({
         error: "Invalid player",
       });
@@ -64,25 +67,29 @@ export default async function handler(
       ),
     ]);
 
-    if (!matchesResponse.ok) {
-      return res.status(
-        matchesResponse.status,
-      ).json({
-        error:
-          "Could not load player matches",
-      });
+    if (!profileResponse.ok) {
+      return res
+        .status(profileResponse.status)
+        .json({
+          error:
+            "Could not load player profile",
+        });
     }
+
+    if (!matchesResponse.ok) {
+      return res
+        .status(matchesResponse.status)
+        .json({
+          error:
+            "Could not load player matches",
+        });
+    }
+
+    const profile =
+      await profileResponse.json();
 
     const matches =
       await matchesResponse.json();
-
-    /*
-     * We don't want a failed profile request
-     * to kill the match feed as well.
-     */
-    const profile = profileResponse.ok
-      ? await profileResponse.json()
-      : null;
 
     return res.status(200).json({
       profile,
