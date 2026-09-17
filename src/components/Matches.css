@@ -235,6 +235,17 @@
 }
 
 .team-match__player {
+  display: grid;
+
+  grid-template-columns:
+    minmax(95px, 1fr)
+    minmax(150px, auto)
+    auto;
+
+  align-items: center;
+
+  gap: 14px;
+
   padding: 14px 0;
 
   border-bottom:
@@ -243,100 +254,93 @@
 
 .team-match__player:last-child {
   border-bottom: none;
+
   padding-bottom: 0;
 }
 
-.team-match__player-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 16px;
-}
+/* NAME / KD */
 
 .team-match__player-name {
   display: flex;
   align-items: baseline;
 
   gap: 8px;
+
+  min-width: 0;
 }
 
 .team-match__player-name strong {
+  min-width: 0;
+
+  overflow: hidden;
+
   color: #35a7ff;
 
   font-size: 11px;
+
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .team-match__player-name span {
+  flex-shrink: 0;
+
   color: #667287;
 
   font-size: 7px;
   font-weight: 700;
+
+  white-space: nowrap;
 }
 
-.team-match__player-stats {
+/* CS RATING INLINE */
+
+.team-match__rating-inline {
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  gap: 8px;
+  gap: 7px;
 
-  color: #8995aa;
+  min-width: 0;
 
-  font-size: 8px;
-  font-weight: 700;
+  padding: 6px 9px;
+
+  border: 1px solid rgba(53, 167, 255, 0.1);
+
+  background:
+    rgba(53, 167, 255, 0.035);
 }
 
-.rating-positive {
-  color: #43ff9a;
-}
-
-.rating-negative {
-  color: #ff5263;
-}
-
-/* CS RATING */
-
-.team-match__rating {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  gap: 16px;
-
-  margin-top: 12px;
-  padding-top: 11px;
-
-  border-top:
-    1px solid rgba(53, 167, 255, 0.1);
-}
-
-.team-match__rating > div {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-}
-
-.team-match__rating > div span {
-  color: #35a7ff;
+.team-match__rating-inline > span {
+  color: #556176;
 
   font-size: 6px;
   font-weight: 700;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.11em;
+
+  white-space: nowrap;
 }
 
-.team-match__rating > div strong {
+.team-match__rating-inline > strong {
   color: #c5cede;
 
-  font-size: 11px;
-  letter-spacing: -0.02em;
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: -0.015em;
+
+  white-space: nowrap;
 }
 
-.team-match__rating-change {
-  color: #667287;
+.team-match__rating-inline > em {
+  font-style: normal;
 
-  font-size: 12px;
+  font-size: 9px;
+  font-weight: 800;
+
+  white-space: nowrap;
 }
 
 .team-match__rating-change--positive {
@@ -344,6 +348,31 @@
 }
 
 .team-match__rating-change--negative {
+  color: #ff5263;
+}
+
+/* PLAYER STATS */
+
+.team-match__player-stats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  color: #8995aa;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.rating-positive {
+  color: #43ff9a;
+}
+
+.rating-negative {
   color: #ff5263;
 }
 
@@ -389,6 +418,30 @@
   letter-spacing: 0.14em;
 }
 
+/* LARGE LAPTOP */
+
+@media (max-width: 1350px) {
+  .team-match__player {
+    grid-template-columns:
+      minmax(90px, 1fr)
+      auto;
+  }
+
+  .team-match__rating-inline {
+    grid-column: 1 / -1;
+
+    justify-content: flex-start;
+
+    width: fit-content;
+
+    margin-top: -3px;
+  }
+
+  .team-match__player-stats {
+    justify-content: flex-end;
+  }
+}
+
 /* LAPTOP */
 
 @media (max-width: 1150px) {
@@ -398,6 +451,43 @@
 
   .matches__grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .team-match__player {
+    grid-template-columns:
+      minmax(100px, 1fr)
+      minmax(150px, auto)
+      auto;
+  }
+
+  .team-match__rating-inline {
+    grid-column: auto;
+
+    justify-content: center;
+
+    width: auto;
+
+    margin-top: 0;
+  }
+}
+
+/* NARROW LAPTOP / TABLET */
+
+@media (max-width: 950px) {
+  .team-match__player {
+    grid-template-columns:
+      minmax(90px, 1fr)
+      auto;
+  }
+
+  .team-match__rating-inline {
+    grid-column: 1 / -1;
+
+    justify-content: flex-start;
+
+    width: fit-content;
+
+    margin-top: -3px;
   }
 }
 
@@ -424,11 +514,30 @@
   .matches__grid {
     grid-template-columns: 1fr;
   }
+
+  .team-match__player {
+    grid-template-columns:
+      minmax(110px, 1fr)
+      minmax(160px, auto)
+      auto;
+
+    gap: 14px;
+  }
+
+  .team-match__rating-inline {
+    grid-column: auto;
+
+    justify-content: center;
+
+    width: auto;
+
+    margin-top: 0;
+  }
 }
 
 /* MOBILE */
 
-@media (max-width: 540px) {
+@media (max-width: 600px) {
   .matches {
     padding: 72px 20px;
   }
@@ -450,24 +559,36 @@
   }
 
   .team-match__player {
-    align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
 
-    gap: 8px;
+    gap: 9px;
   }
 
-  .team-match__player-stats {
+  .team-match__player-name {
+    justify-content: space-between;
+
+    width: 100%;
+  }
+
+  .team-match__rating-inline {
+    grid-column: auto;
+
+    justify-content: flex-start;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    margin-top: 0;
+
     flex-wrap: wrap;
   }
 
-  .team-match__player-row {
-    align-items: flex-start;
-    flex-direction: column;
+  .team-match__player-stats {
+    justify-content: flex-start;
 
-    gap: 8px;
-  }
+    flex-wrap: wrap;
 
-  .team-match__rating {
-    align-items: flex-start;
+    white-space: normal;
   }
 }

@@ -1,15 +1,10 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import { players } from "../data/players";
 
 import "./Matches.css";
 
-const PLAYER_IDS = players.map(
-  (player) => player.steamId,
-);
+const PLAYER_IDS = players.map((player) => player.steamId);
 
 type TeamScore = {
   team_number: number;
@@ -46,30 +41,20 @@ type Match = {
   stats: PlayerStats[];
 };
 
-function formatMapName(
-  mapName: string,
-) {
-  return mapName
-    .replace("de_", "")
-    .replace("cs_", "")
-    .toUpperCase();
+function formatMapName(mapName: string) {
+  return mapName.replace("de_", "").replace("cs_", "").toUpperCase();
 }
 
 function formatDate(date: string) {
-  return new Intl.DateTimeFormat(
-    "no-NO",
-    {
-      day: "2-digit",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    },
-  ).format(new Date(date));
+  return new Intl.DateTimeFormat("no-NO", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(date));
 }
 
-function formatGameMode(
-  dataSource: string,
-) {
+function formatGameMode(dataSource: string) {
   switch (dataSource) {
     case "matchmaking":
       return "PREMIER";
@@ -81,84 +66,44 @@ function formatGameMode(
       return "WINGMAN";
 
     default:
-      return dataSource
-        .replaceAll("_", " ")
-        .toUpperCase();
+      return dataSource.replaceAll("_", " ").toUpperCase();
   }
 }
 
-function formatLeetifyRating(
-  rating: number,
-) {
-  const value =
-    rating * 100;
+function formatLeetifyRating(rating: number) {
+  const value = rating * 100;
 
-  return `${
-    value > 0 ? "+" : ""
-  }${value.toFixed(1)}`;
+  return `${value > 0 ? "+" : ""}${value.toFixed(1)}`;
 }
 
-function formatCsRating(
-  rating:
-    | number
-    | null
-    | undefined,
-) {
-  if (
-    rating === null ||
-    rating === undefined
-  ) {
+function formatCsRating(rating: number | null | undefined) {
+  if (rating === null || rating === undefined) {
     return "—";
   }
 
-  return rating.toLocaleString(
-    "en-US",
-  );
+  return rating.toLocaleString("en-US");
 }
 
-function formatRatingChange(
-  change:
-    | number
-    | null
-    | undefined,
-) {
-  if (
-    change === null ||
-    change === undefined
-  ) {
+function formatRatingChange(change: number | null | undefined) {
+  if (change === null || change === undefined) {
     return "—";
   }
 
   if (change > 0) {
-    return `+${change.toLocaleString(
-      "en-US",
-    )}`;
+    return `+${change.toLocaleString("en-US")}`;
   }
 
-  return change.toLocaleString(
-    "en-US",
-  );
+  return change.toLocaleString("en-US");
 }
 
-function getRosterPlayers(
-  match: Match,
-) {
-  return match.stats.filter(
-    (player) =>
-      PLAYER_IDS.includes(
-        player.steam64_id,
-      ),
-  );
+function getRosterPlayers(match: Match) {
+  return match.stats.filter((player) => PLAYER_IDS.includes(player.steam64_id));
 }
 
-function getMatchResult(
-  match: Match,
-) {
-  const rosterPlayers =
-    getRosterPlayers(match);
+function getMatchResult(match: Match) {
+  const rosterPlayers = getRosterPlayers(match);
 
-  const referencePlayer =
-    rosterPlayers[0];
+  const referencePlayer = rosterPlayers[0];
 
   if (!referencePlayer) {
     return {
@@ -168,33 +113,23 @@ function getMatchResult(
     };
   }
 
-  const playerTeam =
-    match.team_scores.find(
-      (team) =>
-        team.team_number ===
-        referencePlayer.initial_team_number,
-    );
+  const playerTeam = match.team_scores.find(
+    (team) => team.team_number === referencePlayer.initial_team_number,
+  );
 
-  const opponentTeam =
-    match.team_scores.find(
-      (team) =>
-        team.team_number !==
-        referencePlayer.initial_team_number,
-    );
+  const opponentTeam = match.team_scores.find(
+    (team) => team.team_number !== referencePlayer.initial_team_number,
+  );
 
-  const playerScore =
-    playerTeam?.score ?? 0;
+  const playerScore = playerTeam?.score ?? 0;
 
-  const opponentScore =
-    opponentTeam?.score ?? 0;
+  const opponentScore = opponentTeam?.score ?? 0;
 
   return {
     result:
-      playerScore >
-      opponentScore
+      playerScore > opponentScore
         ? "WIN"
-        : playerScore <
-            opponentScore
+        : playerScore < opponentScore
           ? "LOSS"
           : "DRAW",
 
@@ -203,19 +138,10 @@ function getMatchResult(
   };
 }
 
-function MatchCard({
-  match,
-}: {
-  match: Match;
-}) {
-  const {
-    result,
-    playerScore,
-    opponentScore,
-  } = getMatchResult(match);
+function MatchCard({ match }: { match: Match }) {
+  const { result, playerScore, opponentScore } = getMatchResult(match);
 
-  const rosterPlayers =
-    getRosterPlayers(match);
+  const rosterPlayers = getRosterPlayers(match);
 
   return (
     <article className="team-match">
@@ -228,35 +154,24 @@ function MatchCard({
           </span>
 
           <span className="team-match__mode">
-            {formatGameMode(
-              match.data_source,
-            )}
+            {formatGameMode(match.data_source)}
           </span>
 
           <span className="team-match__players-count">
-            {rosterPlayers.length} KA
-            HVISS?
+            {rosterPlayers.length} KA HVISS?
           </span>
         </div>
 
         <span className="team-match__date">
-          {formatDate(
-            match.finished_at,
-          )}
+          {formatDate(match.finished_at)}
         </span>
       </div>
 
       <div className="team-match__main">
         <div>
-          <span className="team-match__label">
-            MAP
-          </span>
+          <span className="team-match__label">MAP</span>
 
-          <h3>
-            {formatMapName(
-              match.map_name,
-            )}
-          </h3>
+          <h3>{formatMapName(match.map_name)}</h3>
         </div>
 
         <div className="team-match__score">
@@ -269,145 +184,85 @@ function MatchCard({
       </div>
 
       <div className="team-match__roster">
-        {rosterPlayers.map(
-          (player) => {
-            const hasCsRating =
-              match.data_source ===
-                "matchmaking" &&
-              player.cs_rating_after !=
-                null;
+        {rosterPlayers.map((player) => {
+          const hasCsRating =
+            match.data_source === "matchmaking" &&
+            player.cs_rating_after != null;
 
-            return (
-              <div
-                className="team-match__player"
-                key={
-                  player.steam64_id
-                }
-              >
-                <div className="team-match__player-row">
-                  <div className="team-match__player-name">
-                    <strong>
-                      {player.name}
-                    </strong>
+          return (
+            <div className="team-match__player" key={player.steam64_id}>
+              <div className="team-match__player-name">
+                <strong>{player.name}</strong>
 
-                    <span>
-                      {player.kd_ratio.toFixed(
-                        2,
-                      )}{" "}
-                      KD
-                    </span>
-                  </div>
-
-                  <div className="team-match__player-stats">
-                    <span>
-                      {
-                        player.total_kills
-                      }
-                      K
-                    </span>
-
-                    <span>
-                      {
-                        player.total_deaths
-                      }
-                      D
-                    </span>
-
-                    <span>
-                      {
-                        player.total_assists
-                      }
-                      A
-                    </span>
-
-                    <strong
-                      className={
-                        player.leetify_rating >=
-                        0
-                          ? "rating-positive"
-                          : "rating-negative"
-                      }
-                    >
-                      {formatLeetifyRating(
-                        player.leetify_rating,
-                      )}
-                    </strong>
-                  </div>
-                </div>
-
-                {hasCsRating && (
-                  <div className="team-match__rating">
-                    <div>
-                      <span>
-                        CS RATING
-                      </span>
-
-                      <strong>
-                        {player.cs_rating_before !=
-                        null
-                          ? `${formatCsRating(
-                              player.cs_rating_before,
-                            )} → `
-                          : ""}
-
-                        {formatCsRating(
-                          player.cs_rating_after,
-                        )}
-                      </strong>
-                    </div>
-
-                    <strong
-                      className={`team-match__rating-change ${
-                        player.cs_rating_change ==
-                        null
-                          ? ""
-                          : player.cs_rating_change >=
-                              0
-                            ? "team-match__rating-change--positive"
-                            : "team-match__rating-change--negative"
-                      }`}
-                    >
-                      {formatRatingChange(
-                        player.cs_rating_change,
-                      )}
-                    </strong>
-                  </div>
-                )}
+                <span>{player.kd_ratio.toFixed(2)} KD</span>
               </div>
-            );
-          },
-        )}
+
+              {hasCsRating && (
+                <div className="team-match__rating-inline">
+                  <span>CS RATING</span>
+
+                  <strong>
+                    {player.cs_rating_before != null
+                      ? `${formatCsRating(player.cs_rating_before)} → `
+                      : ""}
+
+                    {formatCsRating(player.cs_rating_after)}
+                  </strong>
+
+                  <em
+                    className={
+                      player.cs_rating_change == null
+                        ? ""
+                        : player.cs_rating_change >= 0
+                          ? "team-match__rating-change--positive"
+                          : "team-match__rating-change--negative"
+                    }
+                  >
+                    {formatRatingChange(player.cs_rating_change)}
+                  </em>
+                </div>
+              )}
+
+              <div className="team-match__player-stats">
+                <span>{player.total_kills}K</span>
+                <span>{player.total_deaths}D</span>
+                <span>{player.total_assists}A</span>
+
+                <strong
+                  className={
+                    player.leetify_rating >= 0
+                      ? "rating-positive"
+                      : "rating-negative"
+                  }
+                >
+                  {formatLeetifyRating(player.leetify_rating)}
+                </strong>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </article>
   );
 }
 
 function Matches() {
-  const [matches, setMatches] =
-    useState<Match[]>([]);
+  const [matches, setMatches] = useState<Match[]>([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [error, setError] =
-    useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function loadMatches() {
       try {
-        const response =
-          await fetch(
-            "/api/matches",
-          );
+        const response = await fetch("/api/matches");
 
         if (!response.ok) {
-          throw new Error(
-            "Could not load matches",
-          );
+          throw new Error("Could not load matches");
         }
 
-        const data =
-          await response.json();
+        const data = await response.json();
 
         setMatches(data);
       } catch (error) {
@@ -423,42 +278,26 @@ function Matches() {
   }, []);
 
   return (
-    <section
-      className="matches"
-      id="matches"
-    >
+    <section className="matches" id="matches">
       <div className="matches__header">
         <div>
-          <span className="matches__eyebrow">
-            KA HVISS? / CS2
-          </span>
+          <span className="matches__eyebrow">KA HVISS? / CS2</span>
 
-          <h2>
-            RECENT GAMES.
-          </h2>
+          <h2>RECENT GAMES.</h2>
         </div>
 
         <div className="matches__header-meta">
-          <span>
-            TEAM MATCHES ONLY
-          </span>
+          <span>TEAM MATCHES ONLY</span>
 
-          <p>
-            At least two roster
-            members.
-          </p>
+          <p>At least two roster members.</p>
         </div>
       </div>
 
       {loading && (
         <div className="matches__state">
-          <span>
-            LOADING MATCH FEED
-          </span>
+          <span>LOADING MATCH FEED</span>
 
-          <p>
-            Searching for teamwork...
-          </p>
+          <p>Searching for teamwork...</p>
         </div>
       )}
 
@@ -466,51 +305,27 @@ function Matches() {
         <div className="matches__state">
           <span>OFFLINE</span>
 
-          <p>
-            Match history is
-            currently unavailable.
-          </p>
+          <p>Match history is currently unavailable.</p>
         </div>
       )}
 
-      {!loading &&
-        !error &&
-        matches.length > 0 && (
-          <div className="matches__grid">
-            {matches.map(
-              (match) => (
-                <MatchCard
-                  key={
-                    match.id
-                  }
-                  match={
-                    match
-                  }
-                />
-              ),
-            )}
-          </div>
-        )}
+      {!loading && !error && matches.length > 0 && (
+        <div className="matches__grid">
+          {matches.map((match) => (
+            <MatchCard key={match.id} match={match} />
+          ))}
+        </div>
+      )}
 
-      {!loading &&
-        !error &&
-        matches.length === 0 && (
-          <div className="matches__state">
-            <span>
-              NO TEAM MATCHES FOUND
-            </span>
+      {!loading && !error && matches.length === 0 && (
+        <div className="matches__state">
+          <span>NO TEAM MATCHES FOUND</span>
 
-            <p>
-              Seven players.
-              Somehow nobody queued
-              together.
-            </p>
-          </div>
-        )}
+          <p>Seven players. Somehow nobody queued together.</p>
+        </div>
+      )}
 
-      <div className="matches__credit">
-        DATA PROVIDED BY LEETIFY
-      </div>
+      <div className="matches__credit">DATA PROVIDED BY LEETIFY</div>
     </section>
   );
 }
