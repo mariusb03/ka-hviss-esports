@@ -178,6 +178,136 @@
   letter-spacing: 0.05em;
 }
 
+/* LINES + POINTS */
+
+.rating-history__line {
+  pointer-events: none;
+}
+
+.rating-history__point {
+  cursor: pointer;
+}
+
+.rating-history__point-hitbox {
+  cursor: pointer;
+
+  pointer-events: all;
+}
+
+.rating-history__point-dot {
+  pointer-events: none;
+
+  transition:
+    r 0.15s ease,
+    stroke-width 0.15s ease;
+}
+
+.rating-history__point:hover
+  .rating-history__point-dot,
+.rating-history__point--active
+  .rating-history__point-dot {
+  stroke-width: 4;
+}
+
+/* TOOLTIP */
+
+.rating-history__tooltip {
+  filter:
+    drop-shadow(
+      0 10px 24px rgba(0, 0, 0, 0.4)
+    );
+}
+
+.rating-history__tooltip-bg {
+  fill: #0b111e;
+
+  stroke: rgba(53, 167, 255, 0.3);
+  stroke-width: 1;
+}
+
+.rating-history__tooltip-player {
+  fill: #ffffff;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.rating-history__tooltip-label {
+  fill: #7f8b9e;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+.rating-history__tooltip-rating {
+  fill: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+}
+
+.rating-history__tooltip-change {
+  fill: #8995aa;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rating-history__tooltip-change--positive {
+  fill: #43ff9a;
+}
+
+.rating-history__tooltip-change--negative {
+  fill: #ff5263;
+}
+
+.rating-history__tooltip-meta {
+  fill: #a0aabb;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.rating-history__tooltip-outcome {
+  fill: #8995aa;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+.rating-history__tooltip-outcome--win {
+  fill: #43ff9a;
+}
+
+.rating-history__tooltip-outcome--loss {
+  fill: #ff5263;
+}
+
+.rating-history__tooltip-outcome--draw {
+  fill: #f4c542;
+}
+
+.rating-history__tooltip-date {
+  fill: #687589;
+
+  font-size: 6.5px;
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+}
+
 /* LEGEND */
 
 .rating-history__legend {

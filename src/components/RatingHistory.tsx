@@ -29,6 +29,19 @@ type ApiResponse = {
 
 type Period = "7D" | "30D" | "ALL";
 
+type TooltipPoint = {
+  playerName: string;
+  steamId: string;
+  color: string;
+
+  point: RatingPoint;
+
+  x: number;
+  y: number;
+
+  change: number | null;
+};
+
 const LINE_COLORS = [
   "#35a7ff",
   "#43ff9a",
@@ -89,6 +102,69 @@ function formatDate(
     .toUpperCase();
 }
 
+function formatTooltipDate(
+  date: string,
+) {
+  return new Intl.DateTimeFormat(
+    "en",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    },
+  )
+    .format(new Date(date))
+    .toUpperCase();
+}
+
+function formatRatingChange(
+  change: number | null,
+) {
+  if (change === null) {
+    return "—";
+  }
+
+  if (change > 0) {
+    return `+${change.toLocaleString(
+      "en-US",
+    )}`;
+  }
+
+  return change.toLocaleString(
+    "en-US",
+  );
+}
+
+function getOutcomeLabel(
+  outcome: string,
+) {
+  const value =
+    outcome.toLowerCase();
+
+  if (
+    value === "win" ||
+    value === "won"
+  ) {
+    return "WIN";
+  }
+
+  if (
+    value === "loss" ||
+    value === "lost"
+  ) {
+    return "LOSS";
+  }
+
+  if (
+    value === "draw" ||
+    value === "tie"
+  ) {
+    return "DRAW";
+  }
+
+  return outcome.toUpperCase();
+}
+
 function RatingHistory() {
   const [data, setData] =
     useState<RatingPlayer[]>([]);
@@ -106,6 +182,22 @@ function RatingHistory() {
     selectedPlayer,
     setSelectedPlayer,
   ] = useState("ALL");
+
+  const [
+    hoveredPoint,
+    setHoveredPoint,
+  ] =
+    useState<TooltipPoint | null>(
+      null,
+    );
+
+  const [
+    pinnedPoint,
+    setPinnedPoint,
+  ] =
+    useState<TooltipPoint | null>(
+      null,
+    );
 
   useEffect(() => {
     async function loadRatings() {
@@ -127,6 +219,7 @@ function RatingHistory() {
         setData(result.players);
       } catch (error) {
         console.error(error);
+
         setError(true);
       } finally {
         setLoading(false);
@@ -135,6 +228,22 @@ function RatingHistory() {
 
     loadRatings();
   }, []);
+
+  function handlePlayerFilter(
+    steamId: string,
+  ) {
+    setSelectedPlayer(steamId);
+    setHoveredPoint(null);
+    setPinnedPoint(null);
+  }
+
+  function handlePeriodChange(
+    newPeriod: Period,
+  ) {
+    setPeriod(newPeriod);
+    setHoveredPoint(null);
+    setPinnedPoint(null);
+  }
 
   const visiblePlayers =
     useMemo(() => {
@@ -181,6 +290,7 @@ function RatingHistory() {
           player.history.map(
             (point) => ({
               ...point,
+
               timestamp:
                 new Date(
                   point.date,
@@ -351,6 +461,24 @@ function RatingHistory() {
       );
     }, [graph]);
 
+  const activeTooltip =
+    pinnedPoint ??
+    hoveredPoint;
+
+  function handlePointClick(
+    tooltip: TooltipPoint,
+  ) {
+    setPinnedPoint(
+      (current) =>
+        current?.point.id ===
+          tooltip.point.id &&
+        current.steamId ===
+          tooltip.steamId
+          ? null
+          : tooltip,
+    );
+  }
+
   return (
     <div className="rating-history">
       <div className="rating-history__header">
@@ -382,7 +510,7 @@ function RatingHistory() {
                 : ""
             }
             onClick={() =>
-              setSelectedPlayer(
+              handlePlayerFilter(
                 "ALL",
               )
             }
@@ -404,7 +532,7 @@ function RatingHistory() {
                     : ""
                 }
                 onClick={() =>
-                  setSelectedPlayer(
+                  handlePlayerFilter(
                     player.steamId,
                   )
                 }
@@ -432,7 +560,9 @@ function RatingHistory() {
                   : ""
               }
               onClick={() =>
-                setPeriod(option)
+                handlePeriodChange(
+                  option,
+                )
               }
             >
               {option}
@@ -464,6 +594,11 @@ function RatingHistory() {
                 viewBox={`0 0 ${width} ${height}`}
                 role="img"
                 aria-label="CS Rating history"
+                onClick={() =>
+                  setPinnedPoint(
+                    null,
+                  )
+                }
               >
                 {yTicks.map(
                   (tick) => {
@@ -541,19 +676,38 @@ function RatingHistory() {
                       player.history.map(
                         (
                           point,
-                        ) => ({
-                          ...point,
+                          pointIndex,
+                        ) => {
+                          const previous =
+                            pointIndex >
+                            0
+                              ? player
+                                  .history[
+                                  pointIndex -
+                                    1
+                                ]
+                              : null;
 
-                          x: getX(
-                            new Date(
-                              point.date,
-                            ).getTime(),
-                          ),
+                          return {
+                            ...point,
 
-                          y: getY(
-                            point.rating,
-                          ),
-                        }),
+                            x: getX(
+                              new Date(
+                                point.date,
+                              ).getTime(),
+                            ),
+
+                            y: getY(
+                              point.rating,
+                            ),
+
+                            change:
+                              previous
+                                ? point.rating -
+                                  previous.rating
+                                : null,
+                          };
+                        },
                       );
 
                     const path =
@@ -593,48 +747,123 @@ function RatingHistory() {
                           strokeWidth="3"
                           strokeLinejoin="round"
                           strokeLinecap="round"
+                          className="rating-history__line"
                         />
 
                         {points.map(
                           (
                             point,
-                          ) => (
-                            <circle
-                              key={
-                                point.id
-                              }
-                              cx={
-                                point.x
-                              }
-                              cy={
-                                point.y
-                              }
-                              r="4.5"
-                              fill="#050912"
-                              stroke={
-                                color
-                              }
-                              strokeWidth="3"
-                            >
-                              <title>
-                                {
-                                  player.name
-                                }{" "}
-                                ·{" "}
-                                {
-                                  point.rating
-                                }{" "}
-                                ·{" "}
-                                {formatMapName(
-                                  point.mapName,
-                                )}
-                              </title>
-                            </circle>
-                          ),
+                          ) => {
+                            const tooltip: TooltipPoint =
+                              {
+                                playerName:
+                                  player.name,
+
+                                steamId:
+                                  player.steamId,
+
+                                color,
+
+                                point,
+
+                                x:
+                                  point.x,
+
+                                y:
+                                  point.y,
+
+                                change:
+                                  point.change,
+                              };
+
+                            const isActive =
+                              activeTooltip
+                                ?.point
+                                .id ===
+                                point.id &&
+                              activeTooltip
+                                .steamId ===
+                                player.steamId;
+
+                            return (
+                              <g
+                                key={
+                                  point.id
+                                }
+                                className={`rating-history__point ${
+                                  isActive
+                                    ? "rating-history__point--active"
+                                    : ""
+                                }`}
+                                onMouseEnter={() =>
+                                  setHoveredPoint(
+                                    tooltip,
+                                  )
+                                }
+                                onMouseLeave={() =>
+                                  setHoveredPoint(
+                                    null,
+                                  )
+                                }
+                                onClick={(
+                                  event,
+                                ) => {
+                                  event.stopPropagation();
+
+                                  handlePointClick(
+                                    tooltip,
+                                  );
+                                }}
+                              >
+                                <circle
+                                  cx={
+                                    point.x
+                                  }
+                                  cy={
+                                    point.y
+                                  }
+                                  r="12"
+                                  fill="transparent"
+                                  className="rating-history__point-hitbox"
+                                />
+
+                                <circle
+                                  cx={
+                                    point.x
+                                  }
+                                  cy={
+                                    point.y
+                                  }
+                                  r={
+                                    isActive
+                                      ? 6
+                                      : 4.5
+                                  }
+                                  fill="#050912"
+                                  stroke={
+                                    color
+                                  }
+                                  strokeWidth="3"
+                                  className="rating-history__point-dot"
+                                />
+                              </g>
+                            );
+                          },
                         )}
                       </g>
                     );
                   },
+                )}
+
+                {activeTooltip && (
+                  <RatingTooltip
+                    tooltip={
+                      activeTooltip
+                    }
+                    width={
+                      width
+                    }
+                  />
                 )}
               </svg>
             </div>
@@ -695,6 +924,165 @@ function RatingHistory() {
         DATA PROVIDED BY LEETIFY
       </div>
     </div>
+  );
+}
+
+type RatingTooltipProps = {
+  tooltip: TooltipPoint;
+  width: number;
+};
+
+function RatingTooltip({
+  tooltip,
+  width,
+}: RatingTooltipProps) {
+  const tooltipWidth = 190;
+  const tooltipHeight = 104;
+
+  const offset = 14;
+
+  let tooltipX =
+    tooltip.x + offset;
+
+  if (
+    tooltipX +
+      tooltipWidth >
+    width - 10
+  ) {
+    tooltipX =
+      tooltip.x -
+      tooltipWidth -
+      offset;
+  }
+
+  let tooltipY =
+    tooltip.y -
+    tooltipHeight -
+    offset;
+
+  if (tooltipY < 10) {
+    tooltipY =
+      tooltip.y +
+      offset;
+  }
+
+  const outcome =
+    getOutcomeLabel(
+      tooltip.point.outcome,
+    );
+
+  const changeClass =
+    tooltip.change !== null &&
+    tooltip.change > 0
+      ? "rating-history__tooltip-change--positive"
+      : tooltip.change !== null &&
+          tooltip.change < 0
+        ? "rating-history__tooltip-change--negative"
+        : "";
+
+  const outcomeClass =
+    outcome === "WIN"
+      ? "rating-history__tooltip-outcome--win"
+      : outcome === "LOSS"
+        ? "rating-history__tooltip-outcome--loss"
+        : outcome === "DRAW"
+          ? "rating-history__tooltip-outcome--draw"
+          : "";
+
+  return (
+    <g
+      className="rating-history__tooltip"
+      pointerEvents="none"
+      transform={`translate(${tooltipX} ${tooltipY})`}
+    >
+      <rect
+        width={
+          tooltipWidth
+        }
+        height={
+          tooltipHeight
+        }
+        rx="10"
+        className="rating-history__tooltip-bg"
+      />
+
+      <circle
+        cx="14"
+        cy="17"
+        r="4"
+        fill={
+          tooltip.color
+        }
+      />
+
+      <text
+        x="25"
+        y="20"
+        className="rating-history__tooltip-player"
+      >
+        {
+          tooltip.playerName
+        }
+      </text>
+
+      <text
+        x="14"
+        y="43"
+        className="rating-history__tooltip-label"
+      >
+        CS RATING
+      </text>
+
+      <text
+        x="14"
+        y="63"
+        className="rating-history__tooltip-rating"
+      >
+        {formatRating(
+          tooltip.point.rating,
+        )}
+      </text>
+
+      <text
+        x="176"
+        y="62"
+        textAnchor="end"
+        className={`rating-history__tooltip-change ${changeClass}`}
+      >
+        {formatRatingChange(
+          tooltip.change,
+        )}
+      </text>
+
+      <text
+        x="14"
+        y="85"
+        className="rating-history__tooltip-meta"
+      >
+        {formatMapName(
+          tooltip.point.mapName,
+        )}
+      </text>
+
+      <text
+        x="176"
+        y="85"
+        textAnchor="end"
+        className={`rating-history__tooltip-outcome ${outcomeClass}`}
+      >
+        {outcome}
+      </text>
+
+      <text
+        x="14"
+        y="98"
+        className="rating-history__tooltip-date"
+      >
+        {formatTooltipDate(
+          tooltip.point.date,
+        )}
+      </text>
+    </g>
   );
 }
 
