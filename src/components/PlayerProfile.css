@@ -252,10 +252,6 @@
   letter-spacing: 0.05em;
 }
 
-.player-profile__section-header--matches {
-  margin-top: 56px;
-}
-
 /* SUMMARY */
 
 .player-profile__stats {
@@ -308,6 +304,162 @@
 
 .player-profile__negative {
   color: #ff5263;
+}
+
+/* MATCHES ACCORDION */
+
+.player-profile__matches-section {
+  margin-top: 52px;
+}
+
+.player-profile__matches-toggle {
+  appearance: none;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 18px 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(53, 167, 255, 0.045),
+      transparent 45%
+    ),
+    #080d18;
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.player-profile__matches-toggle:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(53, 167, 255, 0.35);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.player-profile__matches-toggle--open {
+  border-color: rgba(53, 167, 255, 0.3);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(53, 167, 255, 0.08),
+      transparent 45%
+    ),
+    #080d18;
+}
+
+.player-profile__matches-toggle-copy {
+  display: flex;
+  align-items: baseline;
+
+  gap: 14px;
+
+  min-width: 0;
+}
+
+.player-profile__matches-toggle-label {
+  color: #35a7ff;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.player-profile__matches-toggle-copy strong {
+  color: #8995aa;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.player-profile__matches-toggle-action {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex-shrink: 0;
+
+  color: #a0aabb;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.player-profile__matches-toggle-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  border: 1px solid rgba(53, 167, 255, 0.14);
+  border-radius: 8px;
+
+  background: rgba(53, 167, 255, 0.05);
+
+  color: #35a7ff;
+
+  font-size: 17px;
+  line-height: 1;
+
+  transition:
+    transform 0.25s ease,
+    background-color 0.2s ease;
+}
+
+.player-profile__matches-toggle--open
+  .player-profile__matches-toggle-arrow {
+  transform: rotate(180deg);
+
+  background: rgba(53, 167, 255, 0.1);
+}
+
+.player-profile__matches-panel {
+  margin-top: 14px;
+
+  animation:
+    player-profile-matches-open
+    0.25s ease;
+}
+
+@keyframes player-profile-matches-open {
+  from {
+    opacity: 0;
+
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
 }
 
 /* MATCHES */
@@ -772,6 +924,44 @@
     font-size: 9px;
   }
 
+  .player-profile__matches-section {
+    margin-top: 42px;
+  }
+
+  .player-profile__matches-toggle {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 16px;
+
+    padding: 17px;
+
+    border-radius: 11px;
+  }
+
+  .player-profile__matches-toggle-copy {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 5px;
+  }
+
+  .player-profile__matches-toggle-label {
+    font-size: 10px;
+  }
+
+  .player-profile__matches-toggle-copy strong {
+    font-size: 10px;
+  }
+
+  .player-profile__matches-toggle-action {
+    width: 100%;
+
+    justify-content: space-between;
+
+    font-size: 10px;
+  }
+
   .profile-match {
     padding: 18px;
 
@@ -841,5 +1031,15 @@
 
   .player-profile__credit {
     font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-profile__matches-panel {
+    animation: none;
+  }
+
+  .player-profile__matches-toggle-arrow {
+    transition: none;
   }
 }

@@ -276,17 +276,13 @@ function getRatingChange(
     Date.now() -
     days * 24 * 60 * 60 * 1000;
 
-  /*
-   * Best baseline:
-   * the latest known rating at or before
-   * the start of the requested period.
-   */
-  const beforeCutoff = premierHistory.filter(
-    (match) =>
-      new Date(
-        match.finished_at,
-      ).getTime() <= cutoff,
-  );
+  const beforeCutoff =
+    premierHistory.filter(
+      (match) =>
+        new Date(
+          match.finished_at,
+        ).getTime() <= cutoff,
+    );
 
   const baseline =
     beforeCutoff[
@@ -303,6 +299,7 @@ function getRatingChange(
   return {
     value:
       currentRating - baseline.rank,
+
     available: true,
   };
 }
@@ -320,6 +317,11 @@ function PlayerProfile({
 
   const [error, setError] =
     useState(false);
+
+  const [
+    showMatches,
+    setShowMatches,
+  ] = useState(false);
 
   useEffect(() => {
     const controller =
@@ -358,6 +360,7 @@ function PlayerProfile({
         }
 
         console.error(error);
+
         setError(true);
       } finally {
         if (
@@ -386,8 +389,7 @@ function PlayerProfile({
       )
         .filter(
           (match) =>
-            match.rank_type ===
-              11 &&
+            match.rank_type === 11 &&
             match.rank > 0,
         )
         .sort(
@@ -423,8 +425,7 @@ function PlayerProfile({
             after: match.rank,
 
             before:
-              olderMatch?.rank ??
-              null,
+              olderMatch?.rank ?? null,
 
             change: olderMatch
               ? match.rank -
@@ -586,6 +587,9 @@ function PlayerProfile({
     detailedMatches,
     player.steamId,
   ]);
+
+  const matchesPanelId =
+    `player-profile-matches-${player.steamId}`;
 
   return (
     <div className="player-profile">
@@ -801,214 +805,266 @@ function PlayerProfile({
               </div>
             </div>
 
-            <div className="player-profile__section-header player-profile__section-header--matches">
-              <span>
-                RECENT MATCHES
-              </span>
+            <div className="player-profile__matches-section">
+              <button
+                type="button"
+                className={`player-profile__matches-toggle ${
+                  showMatches
+                    ? "player-profile__matches-toggle--open"
+                    : ""
+                }`}
+                aria-expanded={
+                  showMatches
+                }
+                aria-controls={
+                  matchesPanelId
+                }
+                onClick={() =>
+                  setShowMatches(
+                    (current) =>
+                      !current,
+                  )
+                }
+              >
+                <div className="player-profile__matches-toggle-copy">
+                  <span className="player-profile__matches-toggle-label">
+                    RECENT MATCHES
+                  </span>
 
-              <p>LAST 10</p>
-            </div>
+                  <strong>
+                    {
+                      detailedMatches.length
+                    }{" "}
+                    MATCHES
+                  </strong>
+                </div>
 
-            <div className="player-profile__matches">
-              {detailedMatches.map(
-                (match) => {
-                  const stats =
-                    getPlayerStats(
-                      match,
-                      player.steamId,
-                    );
+                <div className="player-profile__matches-toggle-action">
+                  <span>
+                    {showMatches
+                      ? "HIDE MATCHES"
+                      : "SHOW MATCHES"}
+                  </span>
 
-                  if (!stats) {
-                    return null;
+                  <span
+                    className="player-profile__matches-toggle-arrow"
+                    aria-hidden="true"
+                  >
+                    ↓
+                  </span>
+                </div>
+              </button>
+
+              {showMatches && (
+                <div
+                  id={
+                    matchesPanelId
                   }
+                  className="player-profile__matches-panel"
+                >
+                  <div className="player-profile__matches">
+                    {detailedMatches.map(
+                      (match) => {
+                        const stats =
+                          getPlayerStats(
+                            match,
+                            player.steamId,
+                          );
 
-                  const {
-                    result,
-                    playerScore,
-                    opponentScore,
-                  } =
-                    getMatchResult(
-                      match,
-                      player.steamId,
-                    );
+                        if (!stats) {
+                          return null;
+                        }
 
-                  const ratingData =
-                    ratingChangeByMatch.get(
-                      match.id,
-                    );
+                        const {
+                          result,
+                          playerScore,
+                          opponentScore,
+                        } =
+                          getMatchResult(
+                            match,
+                            player.steamId,
+                          );
 
-                  return (
-                    <article
-                      className="profile-match"
-                      key={
-                        match.id
-                      }
-                    >
-                      <div className="profile-match__top">
-                        <div className="profile-match__badges">
-                          <span
-                            className={`profile-match__result profile-match__result--${result.toLowerCase()}`}
-                          >
-                            {
-                              result
-                            }
-                          </span>
+                        const ratingData =
+                          ratingChangeByMatch.get(
+                            match.id,
+                          );
 
-                          <span className="profile-match__mode">
-                            {formatGameMode(
-                              match.data_source,
-                            )}
-                          </span>
-                        </div>
-
-                        <span className="profile-match__date">
-                          {formatDate(
-                            match.finished_at,
-                          )}
-                        </span>
-                      </div>
-
-                      <div className="profile-match__main">
-                        <div>
-                          <span>
-                            MAP
-                          </span>
-
-                          <h4>
-                            {formatMapName(
-                              match.map_name,
-                            )}
-                          </h4>
-                        </div>
-
-                        <div className="profile-match__score">
-                          {
-                            playerScore
-                          }
-
-                          <small>
-                            :
-                          </small>
-
-                          {
-                            opponentScore
-                          }
-                        </div>
-                      </div>
-
-                      <div className="profile-match__numbers">
-                        <div>
-                          <span>
-                            K
-                          </span>
-
-                          <strong>
-                            {
-                              stats.total_kills
-                            }
-                          </strong>
-                        </div>
-
-                        <div>
-                          <span>
-                            D
-                          </span>
-
-                          <strong>
-                            {
-                              stats.total_deaths
-                            }
-                          </strong>
-                        </div>
-
-                        <div>
-                          <span>
-                            A
-                          </span>
-
-                          <strong>
-                            {
-                              stats.total_assists
-                            }
-                          </strong>
-                        </div>
-
-                        <div>
-                          <span>
-                            K/D
-                          </span>
-
-                          <strong>
-                            {stats.kd_ratio.toFixed(
-                              2,
-                            )}
-                          </strong>
-                        </div>
-
-                        <div>
-                          <span>
-                            LEETIFY
-                          </span>
-
-                          <strong
-                            className={
-                              stats.leetify_rating >=
-                              0
-                                ? "player-profile__positive"
-                                : "player-profile__negative"
+                        return (
+                          <article
+                            className="profile-match"
+                            key={
+                              match.id
                             }
                           >
-                            {formatRating(
-                              stats.leetify_rating,
-                            )}
-                          </strong>
-                        </div>
-                      </div>
+                            <div className="profile-match__top">
+                              <div className="profile-match__badges">
+                                <span
+                                  className={`profile-match__result profile-match__result--${result.toLowerCase()}`}
+                                >
+                                  {
+                                    result
+                                  }
+                                </span>
 
-                      {match.data_source ===
-                        "matchmaking" &&
-                        ratingData && (
-                          <div className="profile-match__rating">
-                            <div>
-                              <span>
-                                CS
-                                RATING
-                              </span>
+                                <span className="profile-match__mode">
+                                  {formatGameMode(
+                                    match.data_source,
+                                  )}
+                                </span>
+                              </div>
 
-                              <strong>
-                                {ratingData.before !==
-                                null
-                                  ? `${formatCsRating(
-                                      ratingData.before,
-                                    )} → `
-                                  : ""}
-
-                                {formatCsRating(
-                                  ratingData.after,
+                              <span className="profile-match__date">
+                                {formatDate(
+                                  match.finished_at,
                                 )}
-                              </strong>
+                              </span>
                             </div>
 
-                            <span
-                              className={`profile-match__rating-change ${
-                                ratingData.change ===
-                                null
-                                  ? ""
-                                  : ratingData.change >=
-                                      0
-                                    ? "profile-match__rating-change--positive"
-                                    : "profile-match__rating-change--negative"
-                              }`}
-                            >
-                              {formatChange(
-                                ratingData.change,
+                            <div className="profile-match__main">
+                              <div>
+                                <span>
+                                  MAP
+                                </span>
+
+                                <h4>
+                                  {formatMapName(
+                                    match.map_name,
+                                  )}
+                                </h4>
+                              </div>
+
+                              <div className="profile-match__score">
+                                {
+                                  playerScore
+                                }
+
+                                <small>
+                                  :
+                                </small>
+
+                                {
+                                  opponentScore
+                                }
+                              </div>
+                            </div>
+
+                            <div className="profile-match__numbers">
+                              <div>
+                                <span>
+                                  K
+                                </span>
+
+                                <strong>
+                                  {
+                                    stats.total_kills
+                                  }
+                                </strong>
+                              </div>
+
+                              <div>
+                                <span>
+                                  D
+                                </span>
+
+                                <strong>
+                                  {
+                                    stats.total_deaths
+                                  }
+                                </strong>
+                              </div>
+
+                              <div>
+                                <span>
+                                  A
+                                </span>
+
+                                <strong>
+                                  {
+                                    stats.total_assists
+                                  }
+                                </strong>
+                              </div>
+
+                              <div>
+                                <span>
+                                  K/D
+                                </span>
+
+                                <strong>
+                                  {stats.kd_ratio.toFixed(
+                                    2,
+                                  )}
+                                </strong>
+                              </div>
+
+                              <div>
+                                <span>
+                                  LEETIFY
+                                </span>
+
+                                <strong
+                                  className={
+                                    stats.leetify_rating >=
+                                    0
+                                      ? "player-profile__positive"
+                                      : "player-profile__negative"
+                                  }
+                                >
+                                  {formatRating(
+                                    stats.leetify_rating,
+                                  )}
+                                </strong>
+                              </div>
+                            </div>
+
+                            {match.data_source ===
+                              "matchmaking" &&
+                              ratingData && (
+                                <div className="profile-match__rating">
+                                  <div>
+                                    <span>
+                                      CS
+                                      RATING
+                                    </span>
+
+                                    <strong>
+                                      {ratingData.before !==
+                                      null
+                                        ? `${formatCsRating(
+                                            ratingData.before,
+                                          )} → `
+                                        : ""}
+
+                                      {formatCsRating(
+                                        ratingData.after,
+                                      )}
+                                    </strong>
+                                  </div>
+
+                                  <span
+                                    className={`profile-match__rating-change ${
+                                      ratingData.change ===
+                                      null
+                                        ? ""
+                                        : ratingData.change >=
+                                            0
+                                          ? "profile-match__rating-change--positive"
+                                          : "profile-match__rating-change--negative"
+                                    }`}
+                                  >
+                                    {formatChange(
+                                      ratingData.change,
+                                    )}
+                                  </span>
+                                </div>
                               )}
-                            </span>
-                          </div>
-                        )}
-                    </article>
-                  );
-                },
+                          </article>
+                        );
+                      },
+                    )}
+                  </div>
+                </div>
               )}
             </div>
 
