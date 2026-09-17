@@ -178,35 +178,71 @@
   letter-spacing: 0.05em;
 }
 
-/* LINES + POINTS */
+/* SERIES */
+
+.rating-history__series {
+  opacity: 1;
+
+  transition:
+    opacity 0.18s ease;
+}
+
+.rating-history__series--muted {
+  opacity: 0.2;
+}
+
+.rating-history__series--active {
+  opacity: 1;
+}
 
 .rating-history__line {
   pointer-events: none;
+
+  transition:
+    opacity 0.18s ease,
+    stroke-width 0.18s ease;
 }
+
+/* POINTS */
 
 .rating-history__point {
-  cursor: pointer;
-}
-
-.rating-history__point-hitbox {
-  cursor: pointer;
-
-  pointer-events: all;
+  pointer-events: none;
 }
 
 .rating-history__point-dot {
   pointer-events: none;
 
   transition:
-    r 0.15s ease,
-    stroke-width 0.15s ease;
+    r 0.16s ease,
+    stroke-width 0.16s ease,
+    filter 0.16s ease;
 }
 
-.rating-history__point:hover
-  .rating-history__point-dot,
 .rating-history__point--active
   .rating-history__point-dot {
-  stroke-width: 4;
+  filter:
+    drop-shadow(
+      0 0 7px currentColor
+    );
+}
+
+.rating-history__point-halo {
+  pointer-events: none;
+
+  opacity: 0.14;
+
+  filter:
+    blur(1px);
+}
+
+/* INTERACTION */
+
+.rating-history__interaction-layer {
+  cursor: crosshair;
+
+  pointer-events: all;
+
+  touch-action: pan-x pan-y;
 }
 
 /* TOOLTIP */
@@ -237,12 +273,12 @@
 }
 
 .rating-history__tooltip-label {
-  fill: #7f8b9e;
+  fill: #8b96a8;
 
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 700;
 
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .rating-history__tooltip-rating {
@@ -272,19 +308,19 @@
 .rating-history__tooltip-meta {
   fill: #a0aabb;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
 
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
 }
 
 .rating-history__tooltip-outcome {
   fill: #8995aa;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 800;
 
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
 }
 
 .rating-history__tooltip-outcome--win {
@@ -300,12 +336,12 @@
 }
 
 .rating-history__tooltip-date {
-  fill: #687589;
+  fill: #748095;
 
-  font-size: 6.5px;
+  font-size: 8px;
   font-weight: 700;
 
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
 }
 
 /* LEGEND */
@@ -331,6 +367,23 @@
   border-radius: 8px;
 
   background: rgba(255, 255, 255, 0.02);
+
+  transition:
+    opacity 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.rating-history__legend-item--active {
+  border-color:
+    rgba(53, 167, 255, 0.26) !important;
+
+  background:
+    rgba(53, 167, 255, 0.055) !important;
+}
+
+.rating-history__legend-item--muted {
+  opacity: 0.35;
 }
 
 .rating-history__legend-dot {

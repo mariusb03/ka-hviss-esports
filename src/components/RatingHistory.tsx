@@ -2,6 +2,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type PointerEvent as ReactPointerEvent,
 } from "react";
 
 import { players as roster } from "../data/players";
@@ -42,6 +43,19 @@ type TooltipPoint = {
   change: number | null;
 };
 
+type ChartPoint = RatingPoint & {
+  x: number;
+  y: number;
+  change: number | null;
+};
+
+type ChartSeries = {
+  player: RatingPlayer;
+  color: string;
+  points: ChartPoint[];
+  path: string;
+};
+
 const LINE_COLORS = [
   "#35a7ff",
   "#43ff9a",
@@ -51,6 +65,8 @@ const LINE_COLORS = [
   "#ff8b3d",
   "#65e6ff",
 ];
+
+const HOVER_DISTANCE = 26;
 
 function getCutoff(period: Period) {
   const now = Date.now();
@@ -163,6 +179,25 @@ function getOutcomeLabel(
   }
 
   return outcome.toUpperCase();
+}
+
+function getPlayerColor(
+  steamId: string,
+) {
+  const rosterIndex =
+    roster.findIndex(
+      (player) =>
+        player.steamId === steamId,
+    );
+
+  if (rosterIndex < 0) {
+    return LINE_COLORS[0];
+  }
+
+  return LINE_COLORS[
+    rosterIndex %
+      LINE_COLORS.length
+  ];
 }
 
 function RatingHistory() {
@@ -461,21 +496,255 @@ function RatingHistory() {
       );
     }, [graph]);
 
+  const chartSeries: ChartSeries[] =
+    visiblePlayers.map((player) => {
+      const color =
+        getPlayerColor(
+          player.steamId,
+        );
+
+      const points =
+        player.history.map(
+          (
+            point,
+            pointIndex,
+          ) => {
+            const previous =
+              pointIndex > 0
+                ? player.history[
+                    pointIndex - 1
+                  ]
+                : null;
+
+            return {
+              ...point,
+
+              x: getX(
+                new Date(
+                  point.date,
+                ).getTime(),
+              ),
+
+              y: getY(
+                point.rating,
+              ),
+
+              change:
+                previous
+                  ? point.rating -
+                    previous.rating
+                  : null,
+            };
+          },
+        );
+
+      const path =
+        points
+          .map(
+            (
+              point,
+              index,
+            ) =>
+              `${
+                index === 0
+                  ? "M"
+                  : "L"
+              } ${point.x} ${point.y}`,
+          )
+          .join(" ");
+
+      return {
+        player,
+        color,
+        points,
+        path,
+      };
+    });
+
+  const interactionPoints:
+    TooltipPoint[] =
+    chartSeries.flatMap(
+      (series) =>
+        series.points.map(
+          (point) => ({
+            playerName:
+              series.player.name,
+
+            steamId:
+              series.player.steamId,
+
+            color:
+              series.color,
+
+            point,
+
+            x:
+              point.x,
+
+            y:
+              point.y,
+
+            change:
+              point.change,
+          }),
+        ),
+    );
+
   const activeTooltip =
     pinnedPoint ??
     hoveredPoint;
 
-  function handlePointClick(
-    tooltip: TooltipPoint,
+  function getSvgCoordinates(
+    event: ReactPointerEvent<SVGRectElement>,
   ) {
+    const svg =
+      event.currentTarget
+        .ownerSVGElement;
+
+    if (!svg) {
+      return null;
+    }
+
+    const rect =
+      svg.getBoundingClientRect();
+
+    if (
+      rect.width === 0 ||
+      rect.height === 0
+    ) {
+      return null;
+    }
+
+    return {
+      x:
+        ((event.clientX -
+          rect.left) /
+          rect.width) *
+        width,
+
+      y:
+        ((event.clientY -
+          rect.top) /
+          rect.height) *
+        height,
+    };
+  }
+
+  function findNearestPoint(
+    x: number,
+    y: number,
+  ) {
+    let nearest:
+      TooltipPoint | null =
+      null;
+
+    let nearestDistance =
+      Number.POSITIVE_INFINITY;
+
+    for (
+      const point of
+      interactionPoints
+    ) {
+      const dx =
+        point.x - x;
+
+      const dy =
+        point.y - y;
+
+      const distance =
+        Math.hypot(
+          dx,
+          dy,
+        );
+
+      if (
+        distance <
+        nearestDistance
+      ) {
+        nearestDistance =
+          distance;
+
+        nearest =
+          point;
+      }
+    }
+
+    if (
+      nearestDistance >
+      HOVER_DISTANCE
+    ) {
+      return null;
+    }
+
+    return nearest;
+  }
+
+  function handleChartPointerMove(
+    event: ReactPointerEvent<SVGRectElement>,
+  ) {
+    if (pinnedPoint) {
+      return;
+    }
+
+    const coordinates =
+      getSvgCoordinates(event);
+
+    if (!coordinates) {
+      return;
+    }
+
+    const nearest =
+      findNearestPoint(
+        coordinates.x,
+        coordinates.y,
+      );
+
+    setHoveredPoint(
+      nearest,
+    );
+  }
+
+  function handleChartPointerLeave() {
+    if (!pinnedPoint) {
+      setHoveredPoint(null);
+    }
+  }
+
+  function handleChartPointerDown(
+    event: ReactPointerEvent<SVGRectElement>,
+  ) {
+    const coordinates =
+      getSvgCoordinates(event);
+
+    if (!coordinates) {
+      return;
+    }
+
+    const nearest =
+      findNearestPoint(
+        coordinates.x,
+        coordinates.y,
+      );
+
+    if (!nearest) {
+      setPinnedPoint(null);
+      setHoveredPoint(null);
+
+      return;
+    }
+
     setPinnedPoint(
       (current) =>
         current?.point.id ===
-          tooltip.point.id &&
+          nearest.point.id &&
         current.steamId ===
-          tooltip.steamId
+          nearest.steamId
           ? null
-          : tooltip,
+          : nearest,
+    );
+
+    setHoveredPoint(
+      nearest,
     );
   }
 
@@ -594,11 +863,6 @@ function RatingHistory() {
                 viewBox={`0 0 ${width} ${height}`}
                 role="img"
                 aria-label="CS Rating history"
-                onClick={() =>
-                  setPinnedPoint(
-                    null,
-                  )
-                }
               >
                 {yTicks.map(
                   (tick) => {
@@ -667,123 +931,65 @@ function RatingHistory() {
                   ),
                 )}
 
-                {visiblePlayers.map(
-                  (
-                    player,
-                    playerIndex,
-                  ) => {
-                    const points =
-                      player.history.map(
-                        (
-                          point,
-                          pointIndex,
-                        ) => {
-                          const previous =
-                            pointIndex >
-                            0
-                              ? player
-                                  .history[
-                                  pointIndex -
-                                    1
-                                ]
-                              : null;
+                {chartSeries.map(
+                  (series) => {
+                    const isActiveSeries =
+                      activeTooltip
+                        ?.steamId ===
+                      series.player
+                        .steamId;
 
-                          return {
-                            ...point,
-
-                            x: getX(
-                              new Date(
-                                point.date,
-                              ).getTime(),
-                            ),
-
-                            y: getY(
-                              point.rating,
-                            ),
-
-                            change:
-                              previous
-                                ? point.rating -
-                                  previous.rating
-                                : null,
-                          };
-                        },
-                      );
-
-                    const path =
-                      points
-                        .map(
-                          (
-                            point,
-                            index,
-                          ) =>
-                            `${
-                              index ===
-                              0
-                                ? "M"
-                                : "L"
-                            } ${point.x} ${point.y}`,
-                        )
-                        .join(" ");
-
-                    const color =
-                      LINE_COLORS[
-                        playerIndex %
-                          LINE_COLORS.length
-                      ];
+                    const isMuted =
+                      activeTooltip !==
+                        null &&
+                      !isActiveSeries;
 
                     return (
                       <g
                         key={
-                          player.steamId
+                          series.player
+                            .steamId
                         }
+                        className={`rating-history__series ${
+                          isActiveSeries
+                            ? "rating-history__series--active"
+                            : ""
+                        } ${
+                          isMuted
+                            ? "rating-history__series--muted"
+                            : ""
+                        }`}
                       >
                         <path
-                          d={path}
+                          d={
+                            series.path
+                          }
                           fill="none"
                           stroke={
-                            color
+                            series.color
                           }
-                          strokeWidth="3"
+                          strokeWidth={
+                            isActiveSeries
+                              ? 4
+                              : 3
+                          }
                           strokeLinejoin="round"
                           strokeLinecap="round"
                           className="rating-history__line"
                         />
 
-                        {points.map(
-                          (
-                            point,
-                          ) => {
-                            const tooltip: TooltipPoint =
-                              {
-                                playerName:
-                                  player.name,
-
-                                steamId:
-                                  player.steamId,
-
-                                color,
-
-                                point,
-
-                                x:
-                                  point.x,
-
-                                y:
-                                  point.y,
-
-                                change:
-                                  point.change,
-                              };
-
-                            const isActive =
+                        {series.points.map(
+                          (point) => {
+                            const isActivePoint =
                               activeTooltip
                                 ?.point
                                 .id ===
                                 point.id &&
                               activeTooltip
                                 .steamId ===
-                                player.steamId;
+                                series
+                                  .player
+                                  .steamId;
 
                             return (
                               <g
@@ -791,41 +997,26 @@ function RatingHistory() {
                                   point.id
                                 }
                                 className={`rating-history__point ${
-                                  isActive
+                                  isActivePoint
                                     ? "rating-history__point--active"
                                     : ""
                                 }`}
-                                onMouseEnter={() =>
-                                  setHoveredPoint(
-                                    tooltip,
-                                  )
-                                }
-                                onMouseLeave={() =>
-                                  setHoveredPoint(
-                                    null,
-                                  )
-                                }
-                                onClick={(
-                                  event,
-                                ) => {
-                                  event.stopPropagation();
-
-                                  handlePointClick(
-                                    tooltip,
-                                  );
-                                }}
                               >
-                                <circle
-                                  cx={
-                                    point.x
-                                  }
-                                  cy={
-                                    point.y
-                                  }
-                                  r="12"
-                                  fill="transparent"
-                                  className="rating-history__point-hitbox"
-                                />
+                                {isActivePoint && (
+                                  <circle
+                                    cx={
+                                      point.x
+                                    }
+                                    cy={
+                                      point.y
+                                    }
+                                    r="12"
+                                    fill={
+                                      series.color
+                                    }
+                                    className="rating-history__point-halo"
+                                  />
+                                )}
 
                                 <circle
                                   cx={
@@ -835,15 +1026,19 @@ function RatingHistory() {
                                     point.y
                                   }
                                   r={
-                                    isActive
-                                      ? 6
+                                    isActivePoint
+                                      ? 7
                                       : 4.5
                                   }
                                   fill="#050912"
                                   stroke={
-                                    color
+                                    series.color
                                   }
-                                  strokeWidth="3"
+                                  strokeWidth={
+                                    isActivePoint
+                                      ? 4
+                                      : 3
+                                  }
                                   className="rating-history__point-dot"
                                 />
                               </g>
@@ -854,6 +1049,42 @@ function RatingHistory() {
                     );
                   },
                 )}
+
+                <rect
+                  x={
+                    paddingLeft -
+                    HOVER_DISTANCE
+                  }
+                  y={
+                    paddingTop -
+                    HOVER_DISTANCE
+                  }
+                  width={
+                    width -
+                    paddingLeft -
+                    paddingRight +
+                    HOVER_DISTANCE *
+                      2
+                  }
+                  height={
+                    height -
+                    paddingTop -
+                    paddingBottom +
+                    HOVER_DISTANCE *
+                      2
+                  }
+                  fill="transparent"
+                  className="rating-history__interaction-layer"
+                  onPointerMove={
+                    handleChartPointerMove
+                  }
+                  onPointerLeave={
+                    handleChartPointerLeave
+                  }
+                  onPointerDown={
+                    handleChartPointerDown
+                  }
+                />
 
                 {activeTooltip && (
                   <RatingTooltip
@@ -870,42 +1101,62 @@ function RatingHistory() {
 
             <div className="rating-history__legend">
               {visiblePlayers.map(
-                (
-                  player,
-                  index,
-                ) => (
-                  <div
-                    key={
-                      player.steamId
-                    }
-                  >
-                    <span
-                      className="rating-history__legend-dot"
-                      style={{
-                        background:
-                          LINE_COLORS[
-                            index %
-                              LINE_COLORS.length
-                          ],
-                      }}
-                    />
+                (player) => {
+                  const color =
+                    getPlayerColor(
+                      player.steamId,
+                    );
 
-                    <span>
-                      {
-                        player.name
+                  const isActive =
+                    activeTooltip
+                      ?.steamId ===
+                    player.steamId;
+
+                  const isMuted =
+                    activeTooltip !==
+                      null &&
+                    !isActive;
+
+                  return (
+                    <div
+                      key={
+                        player.steamId
                       }
-                    </span>
+                      className={`rating-history__legend-item ${
+                        isActive
+                          ? "rating-history__legend-item--active"
+                          : ""
+                      } ${
+                        isMuted
+                          ? "rating-history__legend-item--muted"
+                          : ""
+                      }`}
+                    >
+                      <span
+                        className="rating-history__legend-dot"
+                        style={{
+                          background:
+                            color,
+                        }}
+                      />
 
-                    <strong>
-                      {player.currentRating !==
-                      null
-                        ? formatRating(
-                            player.currentRating,
-                          )
-                        : "—"}
-                    </strong>
-                  </div>
-                ),
+                      <span>
+                        {
+                          player.name
+                        }
+                      </span>
+
+                      <strong>
+                        {player.currentRating !==
+                        null
+                          ? formatRating(
+                              player.currentRating,
+                            )
+                          : "—"}
+                      </strong>
+                    </div>
+                  );
+                },
               )}
             </div>
           </>
