@@ -2,8 +2,7 @@
   margin-top: 80px;
   padding-top: 56px;
 
-  border-top:
-    1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* HEADER */
@@ -25,25 +24,30 @@
 
   color: #35a7ff;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.17em;
 }
 
 .rating-history__header h3 {
-  font-size:
-    clamp(38px, 5vw, 64px);
+  margin: 0;
 
+  font-size: clamp(38px, 5vw, 64px);
   line-height: 0.9;
 
   letter-spacing: -0.055em;
 }
 
 .rating-history__header p {
-  color: #667287;
+  max-width: 320px;
 
-  font-size: 10px;
-  letter-spacing: 0.06em;
+  color: #7b879b;
+
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+
+  text-align: right;
 }
 
 /* CONTROLS */
@@ -63,49 +67,50 @@
   display: flex;
   flex-wrap: wrap;
 
-  gap: 7px;
+  gap: 8px;
 }
 
 .rating-history button {
   appearance: none;
 
+  min-height: 34px;
+
   padding: 9px 12px;
 
-  border:
-    1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
   background: #080d18;
 
-  color: #667287;
+  color: #7b879b;
 
   cursor: pointer;
 
   font: inherit;
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 700;
 
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 
   transition:
     color 0.2s ease,
     border-color 0.2s ease,
-    background 0.2s ease;
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .rating-history button:hover {
+  transform: translateY(-1px);
+
   color: #ffffff;
 
-  border-color:
-    rgba(53, 167, 255, 0.35);
+  border-color: rgba(53, 167, 255, 0.35);
 }
 
 .rating-history button.active {
-  border-color:
-    rgba(53, 167, 255, 0.65);
+  border-color: rgba(53, 167, 255, 0.65);
 
-  background:
-    rgba(53, 167, 255, 0.1);
+  background: rgba(53, 167, 255, 0.1);
 
   color: #35a7ff;
 }
@@ -119,8 +124,7 @@
 
   padding: 16px;
 
-  border:
-    1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
   background:
     radial-gradient(
@@ -129,6 +133,11 @@
       transparent 55%
     ),
     #080d18;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(53, 167, 255, 0.3)
+    rgba(255, 255, 255, 0.03);
 }
 
 .rating-history__chart svg {
@@ -141,19 +150,18 @@
 }
 
 .rating-history__grid-line {
-  stroke:
-    rgba(255, 255, 255, 0.06);
+  stroke: rgba(255, 255, 255, 0.07);
 
   stroke-width: 1;
 }
 
 .rating-history__axis-label {
-  fill: #556176;
+  fill: #748095;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 /* LEGEND */
@@ -162,9 +170,9 @@
   display: flex;
   flex-wrap: wrap;
 
-  gap: 10px 24px;
+  gap: 12px 24px;
 
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .rating-history__legend > div {
@@ -175,16 +183,18 @@
 }
 
 .rating-history__legend-dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
+
+  flex-shrink: 0;
 
   border-radius: 50%;
 }
 
 .rating-history__legend span {
-  color: #8995aa;
+  color: #98a3b5;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
 
   text-transform: uppercase;
@@ -193,7 +203,8 @@
 .rating-history__legend strong {
   color: #ffffff;
 
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 /* STATES */
@@ -205,26 +216,31 @@
   align-items: center;
   justify-content: center;
 
-  border:
-    1px solid rgba(255, 255, 255, 0.08);
+  padding: 28px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
   background: #080d18;
 
-  color: #667287;
+  color: #7b879b;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
 
-  letter-spacing: 0.16em;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+
+  text-align: center;
 }
 
 .rating-history__credit {
   margin-top: 18px;
 
-  color: #556176;
+  color: #667287;
 
-  font-size: 7px;
-  letter-spacing: 0.14em;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
 }
 
 /* TABLET */
@@ -234,8 +250,26 @@
     margin-top: 64px;
   }
 
+  .rating-history__header {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 14px;
+  }
+
+  .rating-history__header p {
+    max-width: 520px;
+
+    text-align: left;
+  }
+
   .rating-history__controls {
     flex-direction: column;
+  }
+
+  .rating-history__filters,
+  .rating-history__periods {
+    gap: 7px;
   }
 }
 
@@ -248,14 +282,23 @@
   }
 
   .rating-history__header {
-    align-items: flex-start;
-    flex-direction: column;
+    margin-bottom: 24px;
+  }
 
-    gap: 14px;
+  .rating-history__header span {
+    font-size: 9px;
   }
 
   .rating-history__header h3 {
     font-size: 42px;
+  }
+
+  .rating-history__header p {
+    font-size: 11px;
+  }
+
+  .rating-history__controls {
+    gap: 16px;
   }
 
   .rating-history__filters {
@@ -266,17 +309,57 @@
     padding-right: 20px;
 
     overflow-x: auto;
+
+    scrollbar-width: none;
+  }
+
+  .rating-history__filters::-webkit-scrollbar {
+    display: none;
   }
 
   .rating-history__filters button {
     flex-shrink: 0;
   }
 
+  .rating-history button {
+    min-height: 36px;
+
+    padding: 10px 12px;
+
+    font-size: 9px;
+  }
+
   .rating-history__chart {
-    padding: 8px 0;
+    padding: 10px 0;
   }
 
   .rating-history__chart svg {
     min-width: 660px;
+  }
+
+  .rating-history__axis-label {
+    font-size: 12px;
+  }
+
+  .rating-history__legend {
+    gap: 10px 18px;
+  }
+
+  .rating-history__legend span {
+    font-size: 9px;
+  }
+
+  .rating-history__legend strong {
+    font-size: 10px;
+  }
+
+  .rating-history__state {
+    min-height: 240px;
+
+    font-size: 10px;
+  }
+
+  .rating-history__credit {
+    font-size: 8px;
   }
 }

@@ -374,6 +374,7 @@ function PlayerProfile({
       controller.abort();
   }, [player.steamId]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const detailedMatches =
     data?.matches.slice(0, 10) ?? [];
 

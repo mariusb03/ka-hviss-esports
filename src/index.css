@@ -1,31 +1,108 @@
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+
   margin: 0;
   padding: 0;
 }
 
 html {
+  width: 100%;
+  max-width: 100%;
+
   background: #02040a;
+
   scroll-behavior: smooth;
 }
 
 body {
+  width: 100%;
+  max-width: 100%;
+
   min-width: 320px;
   min-height: 100vh;
+
+  overflow-x: hidden;
 
   background: #02040a;
   color: #ffffff;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 16px;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 100vh;
+
+  overflow-x: hidden;
 }
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
-img {
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  border-radius: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
+
   max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+::selection {
+  background: rgba(53, 167, 255, 0.35);
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+  }
 }
