@@ -29,6 +29,10 @@ type PlayerStats = {
 
   kd_ratio: number;
   leetify_rating: number;
+
+  cs_rating_before?: number | null;
+  cs_rating_after?: number | null;
+  cs_rating_change?: number | null;
 };
 
 type Match = {
@@ -42,7 +46,9 @@ type Match = {
   stats: PlayerStats[];
 };
 
-function formatMapName(mapName: string) {
+function formatMapName(
+  mapName: string,
+) {
   return mapName
     .replace("de_", "")
     .replace("cs_", "")
@@ -50,21 +56,29 @@ function formatMapName(mapName: string) {
 }
 
 function formatDate(date: string) {
-  return new Intl.DateTimeFormat("no-NO", {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
+  return new Intl.DateTimeFormat(
+    "no-NO",
+    {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  ).format(new Date(date));
 }
 
-function formatGameMode(dataSource: string) {
+function formatGameMode(
+  dataSource: string,
+) {
   switch (dataSource) {
     case "matchmaking":
       return "PREMIER";
 
     case "matchmaking_competitive":
       return "COMPETITIVE";
+
+    case "matchmaking_wingman":
+      return "WINGMAN";
 
     default:
       return dataSource
@@ -73,13 +87,62 @@ function formatGameMode(dataSource: string) {
   }
 }
 
-function formatRating(rating: number) {
-  const value = rating * 100;
+function formatLeetifyRating(
+  rating: number,
+) {
+  const value =
+    rating * 100;
 
-  return `${value > 0 ? "+" : ""}${value.toFixed(1)}`;
+  return `${
+    value > 0 ? "+" : ""
+  }${value.toFixed(1)}`;
 }
 
-function getRosterPlayers(match: Match) {
+function formatCsRating(
+  rating:
+    | number
+    | null
+    | undefined,
+) {
+  if (
+    rating === null ||
+    rating === undefined
+  ) {
+    return "—";
+  }
+
+  return rating.toLocaleString(
+    "en-US",
+  );
+}
+
+function formatRatingChange(
+  change:
+    | number
+    | null
+    | undefined,
+) {
+  if (
+    change === null ||
+    change === undefined
+  ) {
+    return "—";
+  }
+
+  if (change > 0) {
+    return `+${change.toLocaleString(
+      "en-US",
+    )}`;
+  }
+
+  return change.toLocaleString(
+    "en-US",
+  );
+}
+
+function getRosterPlayers(
+  match: Match,
+) {
   return match.stats.filter(
     (player) =>
       PLAYER_IDS.includes(
@@ -88,7 +151,9 @@ function getRosterPlayers(match: Match) {
   );
 }
 
-function getMatchResult(match: Match) {
+function getMatchResult(
+  match: Match,
+) {
   const rosterPlayers =
     getRosterPlayers(match);
 
@@ -125,9 +190,11 @@ function getMatchResult(match: Match) {
 
   return {
     result:
-      playerScore > opponentScore
+      playerScore >
+      opponentScore
         ? "WIN"
-        : playerScore < opponentScore
+        : playerScore <
+            opponentScore
           ? "LOSS"
           : "DRAW",
 
@@ -167,7 +234,8 @@ function MatchCard({
           </span>
 
           <span className="team-match__players-count">
-            {rosterPlayers.length} KA HVISS?
+            {rosterPlayers.length} KA
+            HVISS?
           </span>
         </div>
 
@@ -202,53 +270,112 @@ function MatchCard({
 
       <div className="team-match__roster">
         {rosterPlayers.map(
-          (player) => (
-            <div
-              className="team-match__player"
-              key={
-                player.steam64_id
-              }
-            >
-              <div className="team-match__player-name">
-                <strong>
-                  {player.name}
-                </strong>
+          (player) => {
+            const hasCsRating =
+              match.data_source ===
+                "matchmaking" &&
+              player.cs_rating_after !=
+                null;
 
-                <span>
-                  {player.kd_ratio.toFixed(
-                    2,
-                  )}{" "}
-                  KD
-                </span>
+            return (
+              <div
+                className="team-match__player"
+                key={
+                  player.steam64_id
+                }
+              >
+                <div className="team-match__player-row">
+                  <div className="team-match__player-name">
+                    <strong>
+                      {player.name}
+                    </strong>
+
+                    <span>
+                      {player.kd_ratio.toFixed(
+                        2,
+                      )}{" "}
+                      KD
+                    </span>
+                  </div>
+
+                  <div className="team-match__player-stats">
+                    <span>
+                      {
+                        player.total_kills
+                      }
+                      K
+                    </span>
+
+                    <span>
+                      {
+                        player.total_deaths
+                      }
+                      D
+                    </span>
+
+                    <span>
+                      {
+                        player.total_assists
+                      }
+                      A
+                    </span>
+
+                    <strong
+                      className={
+                        player.leetify_rating >=
+                        0
+                          ? "rating-positive"
+                          : "rating-negative"
+                      }
+                    >
+                      {formatLeetifyRating(
+                        player.leetify_rating,
+                      )}
+                    </strong>
+                  </div>
+                </div>
+
+                {hasCsRating && (
+                  <div className="team-match__rating">
+                    <div>
+                      <span>
+                        CS RATING
+                      </span>
+
+                      <strong>
+                        {player.cs_rating_before !=
+                        null
+                          ? `${formatCsRating(
+                              player.cs_rating_before,
+                            )} → `
+                          : ""}
+
+                        {formatCsRating(
+                          player.cs_rating_after,
+                        )}
+                      </strong>
+                    </div>
+
+                    <strong
+                      className={`team-match__rating-change ${
+                        player.cs_rating_change ==
+                        null
+                          ? ""
+                          : player.cs_rating_change >=
+                              0
+                            ? "team-match__rating-change--positive"
+                            : "team-match__rating-change--negative"
+                      }`}
+                    >
+                      {formatRatingChange(
+                        player.cs_rating_change,
+                      )}
+                    </strong>
+                  </div>
+                )}
               </div>
-
-              <div className="team-match__player-stats">
-                <span>
-                  {player.total_kills}K
-                </span>
-
-                <span>
-                  {player.total_deaths}D
-                </span>
-
-                <span>
-                  {player.total_assists}A
-                </span>
-
-                <strong
-                  className={
-                    player.leetify_rating >= 0
-                      ? "rating-positive"
-                      : "rating-negative"
-                  }
-                >
-                  {formatRating(
-                    player.leetify_rating,
-                  )}
-                </strong>
-              </div>
-            </div>
-          ),
+            );
+          },
         )}
       </div>
     </article>
@@ -269,7 +396,9 @@ function Matches() {
     async function loadMatches() {
       try {
         const response =
-          await fetch("/api/matches");
+          await fetch(
+            "/api/matches",
+          );
 
         if (!response.ok) {
           throw new Error(
@@ -304,7 +433,9 @@ function Matches() {
             KA HVISS? / CS2
           </span>
 
-          <h2>RECENT GAMES.</h2>
+          <h2>
+            RECENT GAMES.
+          </h2>
         </div>
 
         <div className="matches__header-meta">
@@ -313,14 +444,17 @@ function Matches() {
           </span>
 
           <p>
-            At least two roster members.
+            At least two roster
+            members.
           </p>
         </div>
       </div>
 
       {loading && (
         <div className="matches__state">
-          <span>LOADING MATCH FEED</span>
+          <span>
+            LOADING MATCH FEED
+          </span>
 
           <p>
             Searching for teamwork...
@@ -333,7 +467,8 @@ function Matches() {
           <span>OFFLINE</span>
 
           <p>
-            Match history is currently unavailable.
+            Match history is
+            currently unavailable.
           </p>
         </div>
       )}
@@ -342,12 +477,18 @@ function Matches() {
         !error &&
         matches.length > 0 && (
           <div className="matches__grid">
-            {matches.map((match) => (
-              <MatchCard
-                key={match.id}
-                match={match}
-              />
-            ))}
+            {matches.map(
+              (match) => (
+                <MatchCard
+                  key={
+                    match.id
+                  }
+                  match={
+                    match
+                  }
+                />
+              ),
+            )}
           </div>
         )}
 
@@ -360,7 +501,9 @@ function Matches() {
             </span>
 
             <p>
-              Seven players. Somehow nobody queued together.
+              Seven players.
+              Somehow nobody queued
+              together.
             </p>
           </div>
         )}

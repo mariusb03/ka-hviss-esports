@@ -235,20 +235,23 @@
 }
 
 .team-match__player {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 16px;
-
   padding: 14px 0;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.05);
 }
 
 .team-match__player:last-child {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+.team-match__player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
 }
 
 .team-match__player-name {
@@ -289,6 +292,58 @@
 }
 
 .rating-negative {
+  color: #ff5263;
+}
+
+/* CS RATING */
+
+.team-match__rating {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-top: 12px;
+  padding-top: 11px;
+
+  border-top:
+    1px solid rgba(53, 167, 255, 0.1);
+}
+
+.team-match__rating > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.team-match__rating > div span {
+  color: #35a7ff;
+
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.team-match__rating > div strong {
+  color: #c5cede;
+
+  font-size: 11px;
+  letter-spacing: -0.02em;
+}
+
+.team-match__rating-change {
+  color: #667287;
+
+  font-size: 12px;
+}
+
+.team-match__rating-change--positive {
+  color: #43ff9a;
+}
+
+.team-match__rating-change--negative {
   color: #ff5263;
 }
 
@@ -403,5 +458,16 @@
 
   .team-match__player-stats {
     flex-wrap: wrap;
+  }
+
+  .team-match__player-row {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 8px;
+  }
+
+  .team-match__rating {
+    align-items: flex-start;
   }
 }
