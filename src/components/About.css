@@ -31,24 +31,33 @@
 .about__eyebrow {
   color: #35a7ff;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
 }
 
 .about__index {
-  color: #6f7b8f;
+  padding: 7px 10px;
 
-  font-size: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  color: #8995aa;
+
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 }
 
 /* GRID */
 
 .about__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  grid-template-columns:
+    minmax(0, 1.2fr)
+    minmax(0, 0.8fr);
 
   gap: 80px;
 
@@ -71,25 +80,25 @@
 /* CONTENT */
 
 .about__content {
-  max-width: 560px;
+  max-width: 580px;
 
   padding-top: 12px;
 }
 
 .about__content p {
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 
-  color: #98a3b5;
+  color: #a1acbd;
 
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.7;
 }
 
 .about__content .about__lead {
   color: #ffffff;
 
-  font-size: 22px;
-  line-height: 1.45;
+  font-size: 23px;
+  line-height: 1.48;
 
   letter-spacing: -0.02em;
 }
@@ -99,28 +108,42 @@
 .about__quote {
   margin-top: 56px;
 
-  padding: 28px 0;
+  padding: 28px 30px;
 
-  border-top: 1px solid rgba(255, 255, 255, 0.09);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(53, 167, 255, 0.06),
+      transparent 55%
+    ),
+    rgba(8, 13, 24, 0.55);
 }
 
 .about__quote span {
-  display: block;
+  display: inline-block;
 
   margin-bottom: 18px;
+  padding: 6px 9px;
+
+  border: 1px solid rgba(53, 167, 255, 0.15);
+  border-radius: 7px;
+
+  background: rgba(53, 167, 255, 0.05);
 
   color: #35a7ff;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 }
 
 .about__quote strong {
   display: block;
 
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(30px, 3vw, 44px);
   line-height: 1;
 
   letter-spacing: -0.045em;
@@ -132,7 +155,7 @@
   display: flex;
   justify-content: space-between;
 
-  gap: 36px;
+  gap: 14px;
 
   padding: 24px 0;
 
@@ -140,20 +163,31 @@
 
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 
-  color: #6f7b8f;
+  color: #8995aa;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.13em;
 
   white-space: nowrap;
 }
 
 .about__ticker span {
   flex-shrink: 0;
+
+  padding: 8px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .about__ticker span:nth-child(2) {
+  border-color: rgba(53, 167, 255, 0.16);
+
+  background: rgba(53, 167, 255, 0.05);
+
   color: #35a7ff;
 }
 
@@ -183,13 +217,17 @@
   }
 
   .about__content p {
-    font-size: 17px;
+    font-size: 18px;
+  }
+
+  .about__content .about__lead {
+    font-size: 22px;
   }
 
   .about__ticker {
     justify-content: flex-start;
 
-    gap: 28px;
+    gap: 12px;
 
     overflow-x: auto;
 
@@ -212,18 +250,20 @@
     align-items: flex-start;
     flex-direction: column;
 
-    gap: 12px;
+    gap: 14px;
 
     margin-bottom: 44px;
   }
 
   .about__eyebrow {
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    letter-spacing: 0.17em;
   }
 
   .about__index {
-    font-size: 9px;
+    padding: 6px 9px;
+
+    font-size: 10px;
   }
 
   .about__title h2 {
@@ -238,37 +278,47 @@
   }
 
   .about__content .about__lead {
-    font-size: 20px;
+    font-size: 21px;
     line-height: 1.5;
   }
 
   .about__content p {
     margin-bottom: 22px;
 
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.65;
   }
 
   .about__quote {
     margin-top: 44px;
 
-    padding: 24px 0;
+    padding: 24px 20px;
+
+    border-radius: 14px;
   }
 
   .about__quote span {
-    font-size: 9px;
+    margin-bottom: 16px;
+
+    font-size: 10px;
   }
 
   .about__quote strong {
-    font-size: clamp(28px, 9vw, 40px);
+    font-size: clamp(30px, 9vw, 42px);
   }
 
   .about__ticker {
-    gap: 24px;
+    gap: 10px;
 
     padding: 20px 0;
 
-    font-size: 9px;
-    letter-spacing: 0.13em;
+    font-size: 10px;
+    letter-spacing: 0.11em;
+  }
+
+  .about__ticker span {
+    padding: 7px 10px;
+
+    border-radius: 7px;
   }
 }

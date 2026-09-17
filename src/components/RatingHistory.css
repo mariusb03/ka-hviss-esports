@@ -18,15 +18,21 @@
 }
 
 .rating-history__header span {
-  display: block;
+  display: inline-block;
 
   margin-bottom: 10px;
+  padding: 6px 9px;
+
+  border: 1px solid rgba(53, 167, 255, 0.14);
+  border-radius: 7px;
+
+  background: rgba(53, 167, 255, 0.045);
 
   color: #35a7ff;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.17em;
+  letter-spacing: 0.15em;
 }
 
 .rating-history__header h3 {
@@ -41,11 +47,11 @@
 .rating-history__header p {
   max-width: 320px;
 
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.035em;
 
   text-align: right;
 }
@@ -73,38 +79,42 @@
 .rating-history button {
   appearance: none;
 
-  min-height: 34px;
+  min-height: 38px;
 
-  padding: 9px 12px;
+  padding: 9px 13px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
 
   background: #080d18;
 
-  color: #7b879b;
+  color: #8995aa;
 
   cursor: pointer;
 
   font: inherit;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
 
-  letter-spacing: 0.1em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
 
   transition:
     color 0.2s ease,
     border-color 0.2s ease,
     background-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
 .rating-history button:hover {
   transform: translateY(-1px);
 
-  color: #ffffff;
-
   border-color: rgba(53, 167, 255, 0.35);
+
+  background: rgba(53, 167, 255, 0.04);
+
+  color: #ffffff;
 }
 
 .rating-history button.active {
@@ -113,6 +123,9 @@
   background: rgba(53, 167, 255, 0.1);
 
   color: #35a7ff;
+
+  box-shadow:
+    0 0 18px rgba(20, 120, 255, 0.06);
 }
 
 /* GRAPH */
@@ -122,9 +135,10 @@
 
   overflow-x: auto;
 
-  padding: 16px;
+  padding: 18px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
 
   background:
     radial-gradient(
@@ -156,12 +170,12 @@
 }
 
 .rating-history__axis-label {
-  fill: #748095;
+  fill: #8792a5;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
 }
 
 /* LEGEND */
@@ -170,7 +184,7 @@
   display: flex;
   flex-wrap: wrap;
 
-  gap: 12px 24px;
+  gap: 12px 16px;
 
   margin-top: 18px;
 }
@@ -180,6 +194,13 @@
   align-items: center;
 
   gap: 8px;
+
+  padding: 7px 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .rating-history__legend-dot {
@@ -192,9 +213,9 @@
 }
 
 .rating-history__legend span {
-  color: #98a3b5;
+  color: #a0aabb;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
 
   text-transform: uppercase;
@@ -203,7 +224,7 @@
 .rating-history__legend strong {
   color: #ffffff;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -219,16 +240,17 @@
   padding: 28px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
 
   background: #080d18;
 
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 
   line-height: 1.5;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 
   text-align: center;
 }
@@ -236,11 +258,11 @@
 .rating-history__credit {
   margin-top: 18px;
 
-  color: #667287;
+  color: #718095;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
 }
 
 /* TABLET */
@@ -286,7 +308,7 @@
   }
 
   .rating-history__header span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .rating-history__header h3 {
@@ -294,7 +316,7 @@
   }
 
   .rating-history__header p {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .rating-history__controls {
@@ -322,15 +344,19 @@
   }
 
   .rating-history button {
-    min-height: 36px;
+    min-height: 40px;
 
-    padding: 10px 12px;
+    padding: 10px 13px;
 
-    font-size: 9px;
+    border-radius: 8px;
+
+    font-size: 10px;
   }
 
   .rating-history__chart {
-    padding: 10px 0;
+    padding: 12px 0;
+
+    border-radius: 12px;
   }
 
   .rating-history__chart svg {
@@ -342,24 +368,32 @@
   }
 
   .rating-history__legend {
-    gap: 10px 18px;
+    gap: 10px;
+  }
+
+  .rating-history__legend > div {
+    padding: 7px 9px;
+
+    border-radius: 7px;
   }
 
   .rating-history__legend span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .rating-history__legend strong {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .rating-history__state {
     min-height: 240px;
 
-    font-size: 10px;
+    border-radius: 12px;
+
+    font-size: 11px;
   }
 
   .rating-history__credit {
-    font-size: 8px;
+    font-size: 9px;
   }
 }

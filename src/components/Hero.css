@@ -19,15 +19,22 @@
 }
 
 .hero__eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 
   margin-bottom: 24px;
+  padding: 7px 10px;
+
+  border: 1px solid rgba(53, 167, 255, 0.14);
+  border-radius: 8px;
+
+  background: rgba(53, 167, 255, 0.045);
 
   color: #35a7ff;
 
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
 }
 
 .hero h1 {
@@ -45,7 +52,7 @@
 
   margin-top: 32px;
 
-  color: #98a3b5;
+  color: #9eabba;
 
   font-size: 18px;
   line-height: 1.65;
@@ -72,6 +79,7 @@
   padding: 0 24px;
 
   border: 1px solid transparent;
+  border-radius: 11px;
 
   color: #ffffff;
 
@@ -111,11 +119,13 @@
 .hero__button--secondary {
   border-color: rgba(255, 255, 255, 0.18);
 
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .hero__button--secondary:hover {
   border-color: #35a7ff;
+
+  background: rgba(53, 167, 255, 0.05);
 
   color: #35a7ff;
 }
@@ -128,6 +138,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  padding: 24px;
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(53, 167, 255, 0.06),
+      transparent 62%
+    ),
+    rgba(255, 255, 255, 0.01);
 }
 
 .hero__visual img {
@@ -169,6 +192,12 @@
     font-size: 17px;
   }
 
+  .hero__visual {
+    padding: 20px;
+
+    border-radius: 16px;
+  }
+
   .hero__visual img {
     width: min(520px, 90%);
   }
@@ -186,8 +215,10 @@
   .hero__eyebrow {
     margin-bottom: 18px;
 
+    padding: 6px 9px;
+
     font-size: 11px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.17em;
   }
 
   .hero h1 {
@@ -198,7 +229,7 @@
   .hero p {
     margin-top: 24px;
 
-    color: #a0aabc;
+    color: #a6b0c0;
 
     font-size: 16px;
     line-height: 1.6;
@@ -217,11 +248,17 @@
 
     min-height: 54px;
 
+    border-radius: 10px;
+
     font-size: 12px;
   }
 
   .hero__visual {
     margin-top: 4px;
+
+    padding: 16px;
+
+    border-radius: 14px;
   }
 
   .hero__visual img {

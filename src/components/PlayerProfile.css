@@ -5,6 +5,7 @@
   padding: 32px;
 
   border: 1px solid rgba(53, 167, 255, 0.22);
+  border-radius: 18px;
 
   background:
     radial-gradient(
@@ -45,6 +46,7 @@
   overflow: hidden;
 
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
 
   background: #080d18;
 }
@@ -57,15 +59,21 @@
 }
 
 .player-profile__title > span {
-  display: block;
+  display: inline-block;
 
-  margin-bottom: 9px;
+  margin-bottom: 10px;
+  padding: 6px 9px;
+
+  border: 1px solid rgba(53, 167, 255, 0.14);
+  border-radius: 7px;
+
+  background: rgba(53, 167, 255, 0.045);
 
   color: #35a7ff;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.15em;
 }
 
 .player-profile__title h3 {
@@ -81,11 +89,11 @@
 .player-profile__title p {
   margin-top: 12px;
 
-  color: #7b879b;
+  color: #8d98aa;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.11em;
 }
 
 .player-profile__live {
@@ -94,11 +102,18 @@
 
   gap: 8px;
 
-  color: #95a0b2;
+  padding: 7px 10px;
 
-  font-size: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  color: #a0aabb;
+
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .player-profile__live-dot {
@@ -123,7 +138,10 @@
 
   margin-bottom: 52px;
 
+  overflow: hidden;
+
   border: 1px solid rgba(53, 167, 255, 0.2);
+  border-radius: 14px;
 
   background:
     linear-gradient(
@@ -149,9 +167,9 @@
 
   color: #35a7ff;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 }
 
 .cs-rating__main strong {
@@ -164,11 +182,11 @@
 .cs-rating__main p {
   margin-top: 12px;
 
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 }
 
 .cs-rating__changes {
@@ -193,11 +211,11 @@
 }
 
 .cs-rating__change span {
-  color: #7b879b;
+  color: #8d98aa;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .cs-rating__change strong {
@@ -221,17 +239,17 @@
 .player-profile__section-header > span {
   color: #35a7ff;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 }
 
 .player-profile__section-header p {
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 10px;
-  line-height: 1.4;
-  letter-spacing: 0.06em;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: 0.05em;
 }
 
 .player-profile__section-header--matches {
@@ -244,7 +262,10 @@
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
 
+  overflow: hidden;
+
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
 
   background: #080d18;
 }
@@ -267,11 +288,11 @@
 }
 
 .player-profile__stats span {
-  color: #7b879b;
+  color: #8d98aa;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .player-profile__stats strong {
@@ -304,6 +325,7 @@
   padding: 20px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
 
   background: #080d18;
 
@@ -319,7 +341,8 @@
   border-color: rgba(53, 167, 255, 0.35);
 
   box-shadow:
-    0 14px 35px rgba(0, 0, 0, 0.16);
+    0 14px 35px rgba(0, 0, 0, 0.16),
+    0 0 24px rgba(20, 120, 255, 0.04);
 }
 
 .profile-match__top {
@@ -341,9 +364,9 @@
 }
 
 .profile-match__result {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.11em;
 }
 
 .profile-match__result--win {
@@ -359,23 +382,26 @@
 }
 
 .profile-match__mode {
-  padding: 5px 7px;
+  padding: 5px 8px;
 
   border: 1px solid rgba(53, 167, 255, 0.16);
+  border-radius: 7px;
 
-  color: #95a0b2;
+  background: rgba(53, 167, 255, 0.04);
 
-  font-size: 7px;
+  color: #a0aabb;
+
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
 }
 
 .profile-match__date {
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
 }
 
 .profile-match__main {
@@ -395,11 +421,11 @@
 
   margin-bottom: 6px;
 
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 }
 
 .profile-match__main h4 {
@@ -449,15 +475,15 @@
 }
 
 .profile-match__numbers span {
-  color: #7b879b;
+  color: #8d98aa;
 
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.09em;
 }
 
 .profile-match__numbers strong {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /* MATCH CS RATING */
@@ -470,9 +496,12 @@
   gap: 18px;
 
   margin-top: 18px;
-  padding-top: 16px;
+  padding: 14px 15px;
 
-  border-top: 1px solid rgba(53, 167, 255, 0.12);
+  border: 1px solid rgba(53, 167, 255, 0.12);
+  border-radius: 9px;
+
+  background: rgba(53, 167, 255, 0.035);
 }
 
 .profile-match__rating > div {
@@ -485,20 +514,20 @@
 .profile-match__rating > div span {
   color: #35a7ff;
 
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .profile-match__rating > div strong {
-  font-size: 17px;
+  font-size: 18px;
   letter-spacing: -0.025em;
 }
 
 .profile-match__rating-change {
-  color: #7b879b;
+  color: #8995aa;
 
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 800;
 }
 
@@ -525,6 +554,7 @@
   padding: 28px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
 
   background: #080d18;
 
@@ -534,13 +564,13 @@
 .player-profile__state span {
   color: #35a7ff;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 }
 
 .player-profile__state p {
-  color: #7b879b;
+  color: #8995aa;
 
   font-size: 13px;
   line-height: 1.5;
@@ -549,11 +579,11 @@
 .player-profile__credit {
   margin-top: 18px;
 
-  color: #667287;
+  color: #718095;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
 }
 
 /* LARGE TABLET */
@@ -590,6 +620,8 @@
 @media (max-width: 768px) {
   .player-profile {
     padding: 24px;
+
+    border-radius: 16px;
   }
 
   .player-profile__top {
@@ -624,6 +656,8 @@
     margin-top: 22px;
 
     padding: 20px 16px;
+
+    border-radius: 14px;
   }
 
   .player-profile__top {
@@ -646,10 +680,12 @@
 
   .player-profile__image {
     width: 92px;
+
+    border-radius: 12px;
   }
 
   .player-profile__title > span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .player-profile__title h3 {
@@ -657,11 +693,15 @@
   }
 
   .player-profile__title p {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .player-profile__live {
-    font-size: 9px;
+    font-size: 10px;
+  }
+
+  .cs-rating {
+    border-radius: 12px;
   }
 
   .cs-rating__main {
@@ -669,7 +709,7 @@
   }
 
   .cs-rating__main span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .cs-rating__main strong {
@@ -677,7 +717,7 @@
   }
 
   .cs-rating__main p {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .cs-rating__change {
@@ -685,7 +725,7 @@
   }
 
   .cs-rating__change span {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .cs-rating__change strong {
@@ -700,15 +740,17 @@
   }
 
   .player-profile__section-header > span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .player-profile__section-header p {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .player-profile__stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    border-radius: 10px;
   }
 
   .player-profile__stats > div {
@@ -727,11 +769,13 @@
   }
 
   .player-profile__stats span {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .profile-match {
     padding: 18px;
+
+    border-radius: 11px;
   }
 
   .profile-match__top {
@@ -742,15 +786,15 @@
   }
 
   .profile-match__result {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .profile-match__mode {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .profile-match__date {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .profile-match__main {
@@ -761,7 +805,7 @@
   }
 
   .profile-match__main span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .profile-match__numbers {
@@ -771,27 +815,31 @@
   }
 
   .profile-match__numbers span {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .profile-match__numbers strong {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .profile-match__rating {
     align-items: flex-start;
+
+    padding: 13px 14px;
+
+    border-radius: 8px;
   }
 
   .profile-match__rating > div span {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .profile-match__rating > div strong,
   .profile-match__rating-change {
-    font-size: 18px;
+    font-size: 19px;
   }
 
   .player-profile__credit {
-    font-size: 8px;
+    font-size: 9px;
   }
 }

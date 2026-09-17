@@ -1,3 +1,25 @@
+:root {
+  --color-bg: #02040a;
+  --color-surface: #080d18;
+  --color-surface-soft: rgba(255, 255, 255, 0.02);
+
+  --color-text: #ffffff;
+  --color-text-muted: #8995aa;
+  --color-text-soft: #a0aabb;
+
+  --color-accent: #35a7ff;
+  --color-accent-strong: #1478ff;
+
+  --color-success: #43ff9a;
+  --color-danger: #ff5263;
+  --color-warning: #f4c542;
+
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+}
+
 *,
 *::before,
 *::after {
@@ -11,7 +33,7 @@ html {
   width: 100%;
   max-width: 100%;
 
-  background: #02040a;
+  background: var(--color-bg);
 
   scroll-behavior: smooth;
 }
@@ -25,8 +47,8 @@ body {
 
   overflow-x: hidden;
 
-  background: #02040a;
-  color: #ffffff;
+  background: var(--color-bg);
+  color: var(--color-text);
 
   font-family:
     Arial,
@@ -38,6 +60,7 @@ body {
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   text-rendering: optimizeLegibility;
 }
 
@@ -63,7 +86,7 @@ a {
 }
 
 button {
-  border-radius: 0;
+  color: inherit;
 }
 
 a {
@@ -88,6 +111,11 @@ video {
 ::selection {
   background: rgba(53, 167, 255, 0.35);
   color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {

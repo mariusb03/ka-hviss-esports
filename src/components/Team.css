@@ -27,15 +27,22 @@
 }
 
 .team__eyebrow {
-  display: block;
+  display: inline-flex;
+  align-items: center;
 
   margin-bottom: 16px;
+  padding: 7px 10px;
+
+  border: 1px solid rgba(53, 167, 255, 0.14);
+  border-radius: 8px;
+
+  background: rgba(53, 167, 255, 0.045);
 
   color: #35a7ff;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
 }
 
 .team h2 {
@@ -56,19 +63,19 @@
 }
 
 .team__count {
-  color: #95a0b2;
+  color: #a0aabb;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 }
 
 .team__hint {
   color: #35a7ff;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 }
 
 /* ROSTER RAIL */
@@ -110,6 +117,7 @@
   padding: 0;
 
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
 
   background: #080d18;
 
@@ -156,6 +164,8 @@
 
   overflow: hidden;
 
+  border-radius: 13px 13px 0 0;
+
   background: #0d1628;
 }
 
@@ -199,11 +209,18 @@
 
   z-index: 2;
 
-  color: rgba(255, 255, 255, 0.68);
+  padding: 5px 7px;
 
-  font-size: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+
+  background: rgba(2, 4, 10, 0.48);
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .player-card__active {
@@ -213,15 +230,17 @@
 
   z-index: 2;
 
-  padding: 6px 8px;
+  padding: 6px 9px;
+
+  border-radius: 7px;
 
   background: #1478ff;
 
   color: #ffffff;
 
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 }
 
 /* CARD INFO */
@@ -247,9 +266,9 @@
 
   color: #35a7ff;
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
 }
 
 .player-card h3 {
@@ -257,7 +276,7 @@
 
   overflow-wrap: anywhere;
 
-  font-size: clamp(18px, 1.55vw, 27px);
+  font-size: clamp(19px, 1.6vw, 28px);
   line-height: 0.92;
 
   letter-spacing: -0.045em;
@@ -267,9 +286,9 @@
 .player-card__arrow {
   flex-shrink: 0;
 
-  color: #98a3b5;
+  color: #a0aabb;
 
-  font-size: 19px;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -286,16 +305,28 @@
     min-width: max-content;
   }
 
+  .team__count {
+    font-size: 11px;
+  }
+
+  .team__hint {
+    font-size: 10px;
+  }
+
   .player-card h3 {
     font-size: 22px;
   }
 
   .player-card__role {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .player-card__number {
-    font-size: 10px;
+    font-size: 11px;
+  }
+
+  .player-card__active {
+    font-size: 8px;
   }
 }
 
@@ -319,12 +350,19 @@
     align-items: flex-start;
   }
 
+  .team__eyebrow {
+    padding: 6px 9px;
+
+    font-size: 11px;
+    letter-spacing: 0.17em;
+  }
+
   .team__count {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .team__hint {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .team h2 {
@@ -353,6 +391,14 @@
     padding-right: 20px;
   }
 
+  .player-card {
+    border-radius: 12px;
+  }
+
+  .player-card__image {
+    border-radius: 11px 11px 0 0;
+  }
+
   .player-card__info {
     padding: 14px;
   }
@@ -361,18 +407,22 @@
     top: 12px;
     right: 12px;
 
-    font-size: 10px;
+    padding: 5px 7px;
+
+    font-size: 11px;
   }
 
   .player-card__active {
     left: 10px;
     bottom: 10px;
 
-    font-size: 7px;
+    padding: 6px 8px;
+
+    font-size: 8px;
   }
 
   .player-card__role {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .player-card h3 {
@@ -380,6 +430,6 @@
   }
 
   .player-card__arrow {
-    font-size: 18px;
+    font-size: 19px;
   }
 }
